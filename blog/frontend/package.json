@@ -2,7 +2,7 @@
   "name": "frontend",
   "version": "0.0.0",
   "dependencies": {
-    "grunt-connect-proxy": "^0.1.11"
+    "grunt-connect-proxy": "^0.2.0"
   },
   "repository": {},
   "devDependencies": {
