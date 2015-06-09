@@ -25,7 +25,6 @@
       bower install
       ```
 
-
       ```
       sudo npm install
       ```

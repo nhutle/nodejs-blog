@@ -49,9 +49,11 @@ sudo npm install express-generator -g
 
 ### install frontend
 echo "### Install Yeoman, Grunt CLI and Bower..."
-sudo npm install yo bower grunt-cli -g
+sudo npm install -g yo --unsafe-perm
+sudo npm install bower grunt-cli -g
 
 echo "### Install compass..."
+sudo apt-get install ruby-dev
 sudo gem install compass
 
 echo "### Install Angular generator..."
