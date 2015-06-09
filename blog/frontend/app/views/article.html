@@ -1,0 +1,65 @@
+<div class="container">
+  <div class="row">
+    <div class="article clearfix">
+      <h3 class="article-title">
+      {{article.title}}
+      <span class="pull-right article-owner">post by <a href="javascript:void(0);">{{article.owner}}</a></span>
+      </h3>
+      <ul class="article-photo list-unstyled clearfix">
+        <li ng-repeat="photo in article.photos">
+          <img ng-src="{{photo}}" alt="article's photo">
+        </li>
+      </div>
+      <div class="article-content">
+        <p>{{article.content}}</p>
+      </div>
+      <div class="pull-right" ng-if="article.isEditable && user.isAuth">
+        <a class="btn btn-primary" ui-sref="editArticle({_id: article._id})">
+          <span class="glyphicon glyphicon-pencil">&nbsp;Edit</span>
+        </a>
+        <button class="btn btn-danger" ng-click="deleteArticle(article._id)">
+          <span class="glyphicon glyphicon-remove">&nbsp;Delete</span>
+        </button>
+      </div>
+    </div>
+    <div class="comments">
+      <h3>Comments</h3>
+      <div class="user-comment clearfix" ng-if="user.isAuth">
+        <div class="media">
+          <div class="media-left comment-photo">
+            <a href="javascript:void(0);">
+              <img class="media-object" ng-src="{{user.avatar}}" alt="article's photo">
+            </a>
+          </div>
+          <div class="media-body">
+            <textarea placeholder="Your comment..." class="form-control" ng-model="user.cmt"></textarea>
+          </div>
+        </div>
+        <div class="pull-right">
+          <button class="btn btn-primary">
+            <span class="glyphicon glyphicon-plus" ng-click="addComment(article._id, user.cmt, user._id)">&nbsp;Submit
+            </span>
+          </button>
+        </div>
+      </div>
+      <ul class="list-unstyled comment-list">
+        <li class="comment" ng-repeat="cmt in article.cmts track by cmt._id">
+          <div class="media">
+            <div class="media-left comment-photo">
+              <a href="javascript:void(0);">
+                <img class="media-object" ng-src="{{cmt.user.avatar}}" alt="article's photo">
+              </a>
+            </div>
+            <div class="media-body">
+              <h5 class="media-heading">{{cmt.user.fullname}}</h4>
+              <p>{{cmt.content}}</p>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+</div>
+<div><pre>{{article | json}}</pre></div>
+</div>

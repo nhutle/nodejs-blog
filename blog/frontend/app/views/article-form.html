@@ -1,0 +1,43 @@
+<div class="container">
+  <div class="row">
+    <form class="form-horizontal" role='form' name="articleForm" ng-submit="save(article)">
+      <fieldset>
+        <legend>Article</legend>
+        <div class="form-group">
+          <label for="title" class="col-xs-2 control-label">Title</label>
+          <div class="col-xs-10">
+            <input type="text" id="title" class="form-control" placeholder="Title" required ng-model="article.title" value="{{article.title}}">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="photo" class="col-xs-2 control-label">Photos</label>
+          <div class="col-xs-10">
+            <input type="file" accept=".jpg, .png" file-upload multiple name="photo" id="photo">
+            <ul class="list-unstyled selected-files">
+              <li ng-repeat="photo in photos">{{$index + 1}}. {{photo.name}}</li>
+            </ul>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="content" class="col-xs-2 control-label">Content</label>
+          <div class="col-xs-10">
+            <textarea id="content" rows="10" class="form-control" placeholder="Content" required ng-model="article.content"></textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-xs-offset-8 col-xs-4">
+            <button class="btn btn-primary" ng-disabled="articleForm.$invalid">
+            Save
+            </button>
+            <button class="btn btn-primary">
+            Cancel
+            </button>
+            <a ui-sref="articles" class="btn btn-primary">
+              Back to homepage
+            </a>
+          </div>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+</div>

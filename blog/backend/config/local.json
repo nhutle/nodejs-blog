@@ -1,0 +1,10 @@
+{
+  "database": {
+    "connectionString": "mongodb://nhutle:nhutle@ds037272.mongolab.com:37272/blog"
+  },
+  "secretJWT": "bd2bc693e047f52bb7c9eea04960594552f0d4",
+  "adminEmail": {
+    "user": "ts.acc.27.05.2015@gmail.com",
+    "pass": "thisisatestaccount"
+  }
+}
