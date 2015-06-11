@@ -8,7 +8,7 @@ echo "### Excute install.sh..."
 sh install.sh
 
 echo "### Excute deploy.sh..."
-sh deploy.
+sh deploy.sh
 
 echo "### Excute server.sh..."
 sh server.sh

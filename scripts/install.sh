@@ -16,7 +16,7 @@ sudo npm update npm -g
 ### install backend
 
 ### install frontend
-echo "### Install Yeoman, Grunt CLI and Bower..."
+echo "### Install Grunt CLI and Bower..."
 sudo npm install -g bower grunt-cli -g
 
 echo "### Install compass..."
