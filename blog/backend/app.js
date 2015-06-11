@@ -31,7 +31,7 @@ app.use(session({
   saveUninitialized: false, // don't create session until something stored
   resave: false, //don't save session if unmodified
   store: new MongoStore({
-    url: config.get('database:connectionString'),
+    url: app.get('env') === 'production' ? config.get('database:production:connectionString') : config.get('database:development:connectionString'),
     ttl: 14 * 24 * 60 * 60 // = 14 days. Default
   })
 }));

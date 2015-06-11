@@ -4,8 +4,14 @@ var mongoose = require('mongoose'),
   log = rfr('utils/log'),
   App = {};
 
+App.getDB = function() {
+  return process.env.NODE_ENV === 'production' ? config.get('database:production:connectionString') : config.get('database:development:connectionString');
+};
+
 App.init = function(callback) {
-  mongoose.connect(config.get('database:connectionString'), function(err) {
+  var connectionString = this.getDB();
+
+  mongoose.connect(connectionString, function(err) {
     if (err) {
       log.error(err);
       return callback && callback(err);

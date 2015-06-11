@@ -1,6 +1,11 @@
 {
   "database": {
-    "connectionString": "mongodb://nhutle:nhutle@ds037272.mongolab.com:37272/blog"
+    "development": {
+      "connectionString": "mongodb://localhost/blog"
+    },
+    "production": {
+      "connectionString": "mongodb://localhost/blogPro"
+    }
   },
   "secretJWT": "bd2bc693e047f52bb7c9eea04960594552f0d4",
   "adminEmail": {

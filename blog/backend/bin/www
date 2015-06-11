@@ -7,6 +7,10 @@
 var app = require('../app');
 var debug = require('debug')('backend:server');
 var http = require('http');
+var argv = require('optimist').argv;
+
+process.env.NODE_ENV = argv.env;
+process.env.PORT = argv.port;
 
 /**
  * Get port from environment and store in Express.
