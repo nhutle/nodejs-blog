@@ -23,7 +23,8 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'frontend-dist')));
+
+app.use(express.static(path.join(__dirname, '../', 'frontend/dist')));
 
 app.use(session({
   secret: 'this-is-a-secret-string',

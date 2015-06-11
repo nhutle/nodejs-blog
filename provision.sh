@@ -6,13 +6,13 @@
 # provisioning script whenever the commands `vagrant up`, `vagrant provision`,
 # or `vagrant reload` are used. It provides all of the default packages.
 
-echo '### Updating system...'
+echo "### Updating system..."
 sudo apt-get update
 
-echo '### Install needed tools'
+echo "### Install needed tools..."
 sudo apt-get install git-core python g++ make checkinstall zlib1g-dev zip curl -y
 
-echo '### Install nodejs...'
+echo "### Install nodejs..."
 sudo apt-get install python-software-properties -y
 sudo add-apt-repository ppa:chris-lea/node.js -y
 sudo apt-get update
@@ -22,13 +22,13 @@ sudo npm update npm -g
 
 ### install backend
 #install mongodb
-echo '### Install mongodb...'
+echo "### Install mongodb..."
 
 #Import the public key used by the package management system.
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
 
 #create a list file for MongoDB.
-echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/mongodb.list
+echo "deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen" | sudo tee /etc/apt/sources.list.d/mongodb.list
 
 #reload local package database.
 sudo apt-get update
@@ -44,16 +44,16 @@ echo "mongodb-org-mongos hold" | sudo dpkg --set-selections
 echo "mongodb-org-tools hold" | sudo dpkg --set-selections
 
 #install expressjs framework
-echo '### Install the expressjs framework...'
+echo "### Install the expressjs framework..."
 sudo npm install express-generator -g
 
 ### install frontend
 echo "### Install Yeoman, Grunt CLI and Bower..."
-sudo npm install -g yo --unsafe-perm
-sudo npm install bower grunt-cli -g
+### sudo npm install -g yo --unsafe-perm
+sudo npm install -g yo bower grunt-cli -g
 
 echo "### Install compass..."
-sudo apt-get install ruby-dev
+### sudo apt-get install ruby-dev
 sudo gem install compass
 
 echo "### Install Angular generator..."
