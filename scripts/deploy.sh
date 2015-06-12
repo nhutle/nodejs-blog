@@ -18,11 +18,11 @@ git pull
 echo "### Install needed packages on front-end..."
 cd "../blog/frontend"
 bower install --allow-root
-sudo npm install
+npm install
 
 echo "### Build front-end..."
 grunt build
 
 echo "### Install needed packages on back-end..."
 cd "../backend"
-sudo npm install
+npm install
