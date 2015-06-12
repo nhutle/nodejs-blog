@@ -23,7 +23,7 @@ if [ ! "$branch" ]
 fi
 
 echo "### Set permission for scripts..."
-sudo chmod u+x install.sh deploy.sh server.sh
+chmod u+x install.sh deploy.sh server.sh
 
 echo "### Execute script files..."
 echo "### Excute install.sh..."
