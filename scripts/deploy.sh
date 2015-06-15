@@ -12,6 +12,10 @@ echo "### Switch to a branch..."
 git checkout -b "$branch"
 git pull
 
+echo "### Set permission to user on /tmp/ folder..."
+sudo chmod 777 /tmp/
+
+echo "### Parent directory..."
 current_dir=$(pwd)
 
 echo "### Install needed packages on front-end..."
