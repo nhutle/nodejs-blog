@@ -13,8 +13,7 @@ git checkout -b "$branch"
 git pull
 
 echo "### Install needed packages on front-end..."
-cd
-cd "blog/frontend"
+cd "../blog/frontend"
 #sudo bower install --allow-root
 bower install
 sudo npm install
