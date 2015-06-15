@@ -61,7 +61,7 @@ echo "### Install Yeoman, Grunt CLI and Bower..."
 sudo npm install yo bower grunt-cli -g
 
 #echo "### Install compass..."
-# sudo gem install compass
+sudo gem install compass
 
 echo "### Install Angular generator..."
 sudo npm install -g generator-angular
