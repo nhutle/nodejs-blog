@@ -1,22 +1,36 @@
 #!/bin/bash
 
-branch=$1
+env=$1
 port=$2
-env=$3
+branch=$3
 
-if [ ! "$branch" ]; then
-  branch="develop"
+if [ ! "$env" ]
+  then
+      env="development"
+      echo "env=development"
 fi
 
-if [ ! "$port" ]; then
-  port="80"
+if [ ! "$port" ]
+  then
+      port="3000"
+      echo "port=3000"
 fi
 
-if [ ! "$env" ]; then
-  env="development"
+if [ ! "$branch" ]
+  then
+      branch="master"
+      echo "branch=master"
 fi
 
-sudo chmod +x install.sh deploy.sh server.sh
+echo "### Set permission for scripts..."
+sudo chmod u+rwx install.sh deploy.sh server.sh
+
+echo "### Execute script files..."
+echo "### Excute install.sh..."
 sh install.sh
+
+echo "### Excute deploy.sh..."
 sh deploy.sh $branch
-sh server.sh $env $port 
+
+echo "### Excute server.sh..."
+sh server.sh $env $port

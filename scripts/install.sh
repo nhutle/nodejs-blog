@@ -1,13 +1,11 @@
 #!/bin/bash
 
-echo '### Sets up all environment variables required for development ...'
-
-# Update
+echo "### Updating system..."
 sudo apt-get update
 
-echo '### System requirements ...'
-
-# Install software
+echo "### Install needed tools..."
+# sudo apt-get install git-core python g++ make checkinstall zlib1g-dev zip curl -y
+# sudo apt-get install rubygems ruby-dev
 sudo apt-get -y install git
 sudo apt-get -y install curl
 sudo apt-get -y install vim
@@ -16,27 +14,57 @@ sudo apt-get -y install ruby
 sudo apt-get -y install rubygems
 sudo gem install sass
 
-# Setup NodeJS
-echo "### Install Node & npm ..."
-curl -sL https://deb.nodesource.com/setup | sudo bash -
-sudo apt-get -y install nodejs
-# Update npm
-sudo npm -y -g install npm
+echo "### Install nodejs..."
+sudo apt-get install python-software-properties -y
+sudo add-apt-repository ppa:chris-lea/node.js -y
+sudo apt-get update
+sudo apt-get install nodejs -y
 
-# Install express-generator
-echo "### Install Express generator ..."
-sudo npm -g install express-generator
+echo "### Update npm to latest version..."
+sudo npm update npm -g
 
-# install mongodb
-echo "### Install MongoDB ..."
+echo "### Updating node to v.0.12.4..."
+# fix bower's error
+sudo npm cache clean -f
+sudo npm install -g n
+sudo n stable
+node -v
+
+echo "### Install backend..."
+echo "### Install mongodb..."
+# Import the public key used by the package management system.
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
-echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/mongodb.list
-sudo apt-get -y update
-sudo apt-get install -y mongodb-org=2.6.9 mongodb-org-server=2.6.9 mongodb-org-shell=2.6.9 mongodb-org-mongos=2.6.9 mongodb-org-tools=2.6.9
 
-# Download & Install yo, bower, grunt-cli
-echo "### Download & Install bower, grunt-cli ..."
-sudo npm -g install bower 
-sudo npm -g install grunt-cli
-sudo npm -g install forever
-sudo npm -g install flightplan
+# Create a list file for MongoDB.
+echo "deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen" | sudo tee /etc/apt/sources.list.d/mongodb.list
+
+# Reload local package database.
+sudo apt-get update
+
+# Install the MongoDB packages: 2.6.1
+sudo apt-get install mongodb-org=2.6.1 mongodb-org-server=2.6.1 mongodb-org-shell=2.6.1 mongodb-org-mongos=2.6.1 mongodb-org-tools=2.6.1 -y
+
+# Pin a specific version of MongoDB.
+echo "mongodb-org hold" | sudo dpkg --set-selections
+echo "mongodb-org-server hold" | sudo dpkg --set-selections
+echo "mongodb-org-shell hold" | sudo dpkg --set-selections
+echo "mongodb-org-mongos hold" | sudo dpkg --set-selections
+echo "mongodb-org-tools hold" | sudo dpkg --set-selections
+
+# Install expressjs framework
+echo "### Install the expressjs framework..."
+sudo npm install express-generator -g
+
+### Install frontend
+echo "### Install Yeoman, Grunt CLI and Bower..."
+### sudo npm install -g yo --unsafe-perm
+sudo npm install yo bower grunt-cli -g
+
+#echo "### Install compass..."
+sudo gem install compass
+
+echo "### Install Angular generator..."
+sudo npm install -g generator-angular
+
+echo "### Install forever..."
+sudo npm install forever -g
