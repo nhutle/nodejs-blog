@@ -23,6 +23,13 @@ sudo apt-get install nodejs -y
 echo "### Update npm to latest version..."
 sudo npm update npm -g
 
+echo "### Updating node to v.0.12.4..."
+# fix bower's error
+sudo npm cache clean -f
+sudo npm install -g n
+sudo n stable
+node -v
+
 echo "### Install backend..."
 echo "### Install mongodb..."
 # Import the public key used by the package management system.
@@ -51,10 +58,13 @@ sudo npm install express-generator -g
 ### Install frontend
 echo "### Install Yeoman, Grunt CLI and Bower..."
 ### sudo npm install -g yo --unsafe-perm
-sudo npm install -g yo bower grunt-cli -g
+sudo npm install yo bower grunt-cli -g
 
 #echo "### Install compass..."
 # sudo gem install compass
 
 echo "### Install Angular generator..."
 sudo npm install -g generator-angular
+
+echo "### Install forever..."
+sudo npm install forever -g
