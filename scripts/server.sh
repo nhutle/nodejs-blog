@@ -3,26 +3,18 @@
 env=$1
 port=$2
 
-echo "$env";
-echo "$port";
-
-if [ ! "$env" ]
-  then
-      env="development"
-      echo "env=development"
+if [ ! "$env" ]; then
+  env="development"
 fi
 
-if [ ! "$port" ]
-  then
-      port="3000"
-      echo "port=3000"
+if [ ! "$port" ]; then
+  port="80"
 fi
 
-echo "### Run back-end..."
-cd "../blog/backend"
+echo "---------------------------"
+echo "Run Node Server on $env"
+echo "---------------------------"
 
-echo "### Stop current instance..."
-# forever stop "$env:$port"
-
-echo "### Start new instance..."
-forever -a -o server.log --uid "$env:$port" start ./bin/www --env="$env" --port="$port"
+cd "../src/backend/"
+forever stop "$env-$port"
+forever -a -o server.log --uid "$env-$port" start bin/www --env="$env" --port="$port"

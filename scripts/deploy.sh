@@ -2,25 +2,27 @@
 
 branch=$1
 
-if [ ! "$branch" ]
-  then
-      branch="master"
-      echo "branch=master"
+if [ ! "$branch" ]; then
+  branch="develop"
 fi
 
-echo "### Switch to a branch..."
-git checkout -b "$branch"
+# Pull source code & build code
+echo "### Pull source code & build code ..."
+git checkout "$branch"
 git pull
 
-echo "### Install needed packages on front-end..."
-cd "../blog/frontend"
-#sudo bower install --allow-root
-bower install
-sudo npm install
+# Install frontend dependencies
+current_dir=$(pwd)
 
-echo "### Build front-end..."
+echo "#### Install frontend dependencies ..."
+cd "../blog/frontend"
+sudo npm install
+bower install --allow-root
+echo "#### Build frontend source code ..."
 grunt build
 
-echo "### Install needed packages on back-end..."
-cd "../backend"
+# Install backend dependencies
+echo "#### Install backend dependencies ..."
+cd "$current_dir"
+cd "../blog/backend"
 sudo npm install
