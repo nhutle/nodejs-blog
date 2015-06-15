@@ -23,24 +23,34 @@ plan.target('production', [{
 
 plan.remote('install', function(remote) {
   remote.log('----- Install...');
-  remote.exec('cd nodejs-blog/scripts && sh ./install.sh');
+  remote.with('cd nodejs-blog/scripts', function() {
+    remote.exec('sh ./install.sh');
+  });
+  // remote.exec('cd nodejs-blog/scripts && sh ./install.sh');
 });
 
 plan.remote('server', function(remote) {
   remote.log('----- Server...');
-  remote.exec('cd nodejs-blog/scripts && ./server.sh');
+  remote.with('cd nodejs-blog/scripts', function() {
+    remote.exec('sh ./server.sh');
+  });
+  // remote.exec('cd nodejs-blog/scripts && ./server.sh');
 });
 
 plan.remote('deploy', function(remote) {
   remote.log('----- Deploy...');
-  remote.exec('cd nodejs-blog/scripts && ./deploy.sh');
+  remote.with('cd nodejs-blog/scripts', function() {
+    remote.exec('sh ./deploy.sh');
+  });
+  // remote.exec('cd nodejs-blog/scripts && ./deploy.sh');
 });
 
 plan.remote('init', function(remote) {
   remote.log('----- Initialize...');
   remote.with('cd nodejs-blog/scripts', function(){
-    remote.exec('chmod +x init.sh && ./init.sh')
+    remote.exec('sh ./init.sh');
   });
+  // remote.exec('chmod +x init.sh && sh ./init.sh');
 });
 
 plan.remote('cloneSource', function(remote) {
@@ -50,7 +60,9 @@ plan.remote('cloneSource', function(remote) {
 
 plan.remote('pullSource', function(remote) {
   remote.log('----- Pull source code from github...');
-  remote.exec('cd nodejs-blog && git pull origin master');
+  remote.with('cd nodejs-blog', function(){
+    remote.exec('git pull origin master');
+  });
 });
 
 // run commands on remote server
