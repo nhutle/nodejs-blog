@@ -4,6 +4,9 @@
   angular
     .module('blogApp', [
       'ui.router',
+      'restangular',
+      'LocalStorageModule',
+      'common',
       'blogApp.article',
       'blogApp.user',
       'blogApp.templates'
@@ -11,7 +14,9 @@
     .config([
       '$urlRouterProvider',
       '$stateProvider',
-      function($urlRouterProvider, $stateProvider) {
+      'RestangularProvider',
+      'localStorageServiceProvider',
+      function($urlRouterProvider, $stateProvider, RestangularProvider, localStorageServiceProvider) {
         $urlRouterProvider.otherwise('/articles');
         $stateProvider
           .state('main', {
@@ -29,6 +34,23 @@
               }
             }
           });
+        RestangularProvider.setBaseUrl('/api/');
+        localStorageServiceProvider.setStorageType('sessionStorage');
+        localStorageServiceProvider.setPrefix('ls');
+      }
+    ])
+    .run([
+      '$rootScope',
+      '$state',
+      'SessionService',
+      function($rootScope, $state, SessionService) {
+        $rootScope.user = SessionService.getUser();
+        $rootScope.$on('$stateChangeStart', function(event, toState) {
+          if (toState.isAuthRequired && $rootScope.user === null) {
+            event.preventDefault();
+            $state.go('login');
+          }
+        });
       }
     ]);
 })(angular);

@@ -5,6 +5,7 @@ var rfr = require('rfr'),
   crypt = rfr('utils/crypt'),
   mailer = rfr('utils/mailer'),
   token = rfr('utils/token'),
+  log = rfr('utils/log'),
   User;
 
 User = Base.extend({
@@ -17,24 +18,39 @@ User = Base.extend({
       var userInfo = {};
 
       if (err) {
-        return callback(err);
+        return callback({
+          message: 'A problem has been occurred during processing your data',
+          status: 500
+        });
       }
 
       if (!user) {
-        return callback(err);
+        return callback({
+          message: 'Incorrect email',
+          status: 401
+        });
       }
 
-      if(!user.isActivated) {
-        return callback(err);
+      if (!user.isActivated) {
+        return callback({
+          message: 'Inactivated user',
+          status: 401
+        });
       }
 
       if (!crypt.comparePwd(opts.data.password, user.password, function(err, result) {
         if (err) {
-          return callback(err);
+          return callback({
+            message: 'A problem has been occurred during processing your data',
+            status: 500
+          });
         }
 
         if (!result) {
-          return callback(err);
+          return callback({
+            message: 'Incorrect password',
+            status: 401
+          });
         }
 
         opts.req.session.userId = user._id;
@@ -50,7 +66,10 @@ User = Base.extend({
   logout: function(opts, callback) {
     opts.req.session.destroy(function(err) {
       if (err) {
-        return callback(err);
+        return callback({
+          message: 'A problem has been occurred during processing your data',
+          status: 500
+        });
       }
 
       callback(null);
@@ -64,7 +83,10 @@ User = Base.extend({
       var signUptoken;
 
       if (err) {
-        return callback(err);
+        return callback({
+          message: 'A problem has been occurred during processing your data',
+          status: 500
+        });
       }
 
       signUptoken = token.geneToken(user);
@@ -77,7 +99,9 @@ User = Base.extend({
       self = this;
 
     if (!signUptoken) {
-      return callback({err: 'no token'});
+      return callback({
+        err: 'no token'
+      });
     } else {
       token.verifyToken(signUptoken, function(err, decoded) {
         if (err) {

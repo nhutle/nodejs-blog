@@ -43,7 +43,10 @@ mailer.sendMail = function(req, user, token, callback) {
 
   transporter.sendMail(mailOptions, function(err, info) {
     if (err) {
-      return callback(err);
+      return callback({
+        message: 'A problem has been occurred during processing your data',
+        status: 500
+      });
     }
 
     callback(null);

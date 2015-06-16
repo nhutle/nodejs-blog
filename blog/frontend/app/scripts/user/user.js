@@ -2,17 +2,10 @@
   'use strict';
 
   angular
-    .module('blogApp.user', [
-      'ui.router',
-      'restangular',
-      'LocalStorageModule',
-      'common'
-    ])
+    .module('blogApp.user', [])
     .config([
       '$stateProvider',
-      'RestangularProvider',
-      'localStorageServiceProvider',
-      function($stateProvider, RestangularProvider, localStorageServiceProvider) {
+      function($stateProvider) {
         $stateProvider
           .state('login', {
             parent: 'main',
@@ -35,16 +28,6 @@
             templateUrl: 'views/signup.html',
             controller: 'SignUpCtrl'
           });
-        RestangularProvider.setBaseUrl('/api/');
-        localStorageServiceProvider.setStorageType('sessionStorage');
-        localStorageServiceProvider.setPrefix('ls');
-      }
-    ])
-    .run([
-      '$rootScope',
-      'SessionService',
-      function($rootScope, SessionService) {
-        $rootScope.user = SessionService.getUser();
       }
     ]);
 })(angular);

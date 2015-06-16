@@ -1,6 +1,6 @@
 {
   "database": {
-    "development": {
+    "staging": {
       "connectionString": "mongodb://localhost/blog"
     },
     "production": {

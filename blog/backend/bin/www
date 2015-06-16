@@ -9,8 +9,8 @@ var debug = require('debug')('backend:server');
 var http = require('http');
 var argv = require('optimist').argv;
 
-process.env.NODE_ENV = argv.env;
-process.env.PORT = argv.port;
+process.env.NODE_ENV = argv.env || 'staging';
+process.env.PORT = argv.port || '3000';
 
 /**
  * Get port from environment and store in Express.

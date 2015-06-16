@@ -12,7 +12,6 @@ sudo apt-get -y install vim
 sudo apt-get -y install g++
 sudo apt-get -y install ruby
 sudo apt-get -y install rubygems
-sudo gem install sass
 
 echo "### Install nodejs..."
 sudo apt-get install python-software-properties -y
@@ -60,7 +59,10 @@ echo "### Install Yeoman, Grunt CLI and Bower..."
 ### sudo npm install -g yo --unsafe-perm
 sudo npm install yo bower grunt-cli -g
 
-#echo "### Install compass..."
+echo "### Install sass..."
+sudo gem install sass
+
+echo "### Install compass..."
 sudo gem install compass
 
 echo "### Install Angular generator..."

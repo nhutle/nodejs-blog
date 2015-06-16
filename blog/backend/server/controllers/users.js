@@ -23,7 +23,7 @@ User = Base.extend({
 
     'upload': {
       method: 'post',
-      fn: 'uploadImage'
+      fn: 'upload'
     },
 
     'verify': {
@@ -44,8 +44,10 @@ User = Base.extend({
     this.getService().logout(opts, callback);
   },
 
-  uploadImage: function(opts, callback) {
-    opts.res.send('images/' + opts.req.files.avatar.name);
+  upload: function(opts, callback) {
+    callback(null, {
+      image: 'images/' + opts.req.files.avatar.name
+    });
   },
 
   verifyAcc: function(opts, callback) {

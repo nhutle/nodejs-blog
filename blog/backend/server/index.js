@@ -32,9 +32,8 @@ Server = function(opts) {
 
       self.router.handle(requestParams, function(err, results) {
         res.set('Content-Type', 'application/json');
-
         if (err) {
-          return res.status(404).send(err);
+          return res.status(err.status || 500).send(err);
         }
         res.status(200).send(results);
       });

@@ -19,26 +19,25 @@
         </div>
       </li>
     </ul>
-    <div class="col-xs-6 col-xs-offset-3">
-      <nav class="">
-        <ul class="pagination">
-          <li ng-class="{'pagin-disabled': curPage == 1}">
-            <a href="javascript:void(0);" aria-label="Previous" ng-click="paginData(curPage -1)">
-              <span aria-hidden="true">&laquo;</span>
-            </a>
-          </li>
-          <li ng-repeat="page in pages track by $index" ng-class="{'active': curPage == $index + 1}">
-            <a href="javascript:void(0);" ng-click="paginData(page.text)">
-              <span aria-hidden="true">{{page.text}}</span>
-            </a>
-          </li>
-          <li ng-class="{'pagin-disabled': curPage == pages.length}">
-            <a href="javascript:void(0);" aria-label="Next" ng-click="paginData(curPage + 1)">
-              <span aria-hidden="true">&raquo;</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
+    <nav class="pagin-wrapper">
+      <ul class="pagination">
+        <li ng-class="{'pagin-disabled': curPage == 1}">
+          <a href="javascript:void(0);" aria-label="Previous" ng-click="paginData(curPage -1)">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        <li ng-repeat="page in pages track by $index" ng-class="{'active': curPage == $index + 1}">
+          <a href="javascript:void(0);" ng-click="paginData(page.text)">
+            <span aria-hidden="true">{{page.text}}</span>
+          </a>
+        </li>
+        <li ng-class="{'pagin-disabled': curPage == pages.length}">
+          <a href="javascript:void(0);" aria-label="Next" ng-click="paginData(curPage + 1)">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
   </div>
 </div>
+

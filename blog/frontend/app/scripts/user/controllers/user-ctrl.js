@@ -23,7 +23,7 @@
             $rootScope.isVerified = false;
             $state.go('articles');
           }, function(err) {
-            console.log(err);
+            $scope.errMsg = err.data.message;
           });
         };
 
@@ -35,7 +35,7 @@
             $rootScope.user.isAuth = false;
             SessionService.destroyUser();
           }, function(err) {
-            console.log(err);
+            $scope.errMsg = err.data.message;
           });
         };
       }

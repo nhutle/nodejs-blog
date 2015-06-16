@@ -5,7 +5,7 @@ var mongoose = require('mongoose'),
   App = {};
 
 App.getDB = function() {
-  return process.env.NODE_ENV === 'production' ? config.get('database:production:connectionString') : config.get('database:development:connectionString');
+  return process.env.NODE_ENV === 'production' ? config.get('database:production:connectionString') : config.get('database:staging:connectionString');
 };
 
 App.init = function(callback) {

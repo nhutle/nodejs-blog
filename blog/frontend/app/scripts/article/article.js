@@ -2,16 +2,10 @@
   'use strict';
 
   angular
-    .module('blogApp.article', [
-      'ui.router',
-      'restangular',
-      'common'
-    ])
+    .module('blogApp.article', [])
     .config([
       '$stateProvider',
-      'RestangularProvider',
-      function($stateProvider, RestangularProvider) {
-        RestangularProvider.setBaseUrl('/api/');
+      function($stateProvider) {
         $stateProvider
           .state('articles', {
             parent: 'main',
@@ -64,18 +58,6 @@
             },
             controller: 'EditArticleCtrl'
           });
-      }
-    ])
-    .run([
-      '$rootScope',
-      '$state',
-      function($rootScope, $state) {
-        $rootScope.$on('$stateChangeStart', function(event, toState) {
-          if (toState.isAuthRequired && $rootScope.user === null) {
-            event.preventDefault();
-            $state.go('login');
-          }
-        });
       }
     ]);
 })(angular);
