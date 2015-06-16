@@ -9,33 +9,29 @@
       'article',
       'ArticlesService',
       function($scope, $state, article, ArticlesService) {
-        var isUpCompl = false;
+        var isUploaded = false;
 
         $scope.article = article;
-
-        //listen to the file selected event
         $scope.$on("file:selected", function(evt, args) {
           $scope.photos = args.files;
-
-          ArticlesService.uploadFile(args.files).then(function(files) {
-            isUpCompl = true;
-            $scope.article.photos = files;
+          ArticlesService.uploadFile(args.files).then(function(result) {
+            $scope.article.photos = result.photos;
+            isUploaded = true;
           }, function(err) {
-            console.log(err);
+            $scope.errMsg = err.data.message;
           });
         });
 
         $scope.save = function(article) {
-          if (!isUpCompl) {
+          if (!isUploaded) {
             return;
           }
-
           $scope.article.put().then(function(article) {
             $state.go('article', {
               _id: article._id
             });
           }, function(err) {
-            console.log(err);
+            $scope.errMsg = err.data.message;
           });
         };
       }

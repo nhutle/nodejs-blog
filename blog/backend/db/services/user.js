@@ -100,12 +100,16 @@ User = Base.extend({
 
     if (!signUptoken) {
       return callback({
-        err: 'no token'
+        message: 'There is no token provided',
+        status: 400
       });
     } else {
       token.verifyToken(signUptoken, function(err, decoded) {
         if (err) {
-          return callback(err);
+          return callback({
+            message: 'A problem has been occurred during processing your data',
+            status: 500
+          });
         }
 
         decoded.isActivated = true;

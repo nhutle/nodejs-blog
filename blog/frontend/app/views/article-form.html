@@ -1,5 +1,11 @@
 <div class="container">
   <div class="row">
+    <div class="col-xs-6 col-xs-offset-3 alert alert-danger fade in" ng-if="errMsg">
+      <a href="javascript:void(0)" class="close" data-dismiss="alert">&times;</a>
+      <strong>Error!</strong> {{errMsg}}
+    </div>
+  </div>
+  <div class="row">
     <form class="form-horizontal" role='form' name="articleForm" ng-submit="save(article)">
       <fieldset>
         <legend>Article</legend>

@@ -53,15 +53,7 @@
          * @return {Object} promise
          */
         ArticlesService.addArticle = function(article) {
-          var deferred = $q.defer();
-
-          Articles.post(article).then(function(article) {
-            deferred.resolve(article);
-          }, function(reason) {
-            deferred.reject(reason);
-          });
-
-          return deferred.promise;
+          return Articles.post(article);
         };
 
         /**
@@ -72,41 +64,27 @@
          * @return {Object} promise
          */
         ArticlesService.addComment = function(artId, comment, usrId) {
-          var deferred = $q.defer(),
-            newComment = {};
+          var newComment = {
+            articleId: artId,
+            userId: usrId,
+            content: comment
+          };
 
-          newComment.articleId = artId;
-          newComment.userId = usrId;
-          newComment.content = comment;
-
-          Comments.post(newComment).then(function(comment) {
-            deferred.resolve(comment);
-          }, function(reason) {
-            deferred.reject(reason);
-          });
-
-          return deferred.promise;
+          return Comments.post(newComment);
         };
 
         ArticlesService.uploadFile = function(files) {
-          var deferred = $q.defer(),
-            fd = new FormData();
+          var fd = new FormData();
 
           for (var i = 0, j = files.length; i < j; i++) {
             fd.append('photo' + i, files[i]);
           }
 
-          Articles.withHttpConfig({
+          return Articles.withHttpConfig({
             transformRequest: angular.identity
           }).customPOST(fd, 'upload', undefined, {
             'Content-Type': undefined
-          }).then(function(files) {
-            deferred.resolve(files);
-          }, function(reason) {
-            deferred.reject(reason);
           });
-
-          return deferred.promise;
         };
 
         return ArticlesService;

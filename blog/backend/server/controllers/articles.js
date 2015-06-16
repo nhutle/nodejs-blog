@@ -8,7 +8,7 @@ var rfr = require('rfr'),
     actions: {
       'upload': {
         method: 'post',
-        fn: 'uploadImage'
+        fn: 'upload'
       }
     },
 
@@ -28,14 +28,17 @@ var rfr = require('rfr'),
       this.getService().getArticle(opts, callback);
     },
 
-    uploadImage: function(opts) {
+    upload: function(opts, callback) {
       var files = _.values(opts.req.files),
-          fileNames = [];
+        fileNames = [];
 
       _.each(files, function(file) {
         fileNames.push('images/' + file.name);
       });
-      opts.res.send(fileNames);
+
+      callback(null, {
+        photos: fileNames
+      });
     },
 
     post: function(opts, callback) {

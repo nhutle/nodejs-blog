@@ -8,24 +8,27 @@
       '$state',
       'ArticlesService',
       function($scope, $state, ArticlesService) {
-        $scope.article = {};
+        var isUploaded = false;
 
-        //listen to the file selected event
+        $scope.article = {};
         $scope.$on("file:selected", function(evt, args) {
           $scope.photos = args.files;
-
-          ArticlesService.uploadFile(args.files).then(function(files) {
-            $scope.article.photos = files;
+          ArticlesService.uploadFile(args.files).then(function(result) {
+            $scope.article.photos = result.photos;
+            isUploaded = true;
           }, function(err) {
-            console.log(err);
+            $scope.errMsg = err.data.message;
           });
         });
 
         $scope.save = function(article) {
+          if (!isUploaded) {
+            return;
+          }
           ArticlesService.addArticle(article).then(function() {
             $state.go('articles');
           }, function(err) {
-            console.log(err);
+            $scope.errMsg = err.data.message;
           });
         };
       }
