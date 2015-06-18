@@ -12,8 +12,6 @@ var argv = require('optimist').argv;
 process.env.NODE_ENV = argv.env || 'staging';
 process.env.PORT = argv.port || '3000';
 
-console.log('env: ', process.env.NODE_ENV);
-
 /**
  * Get port from environment and store in Express.
  */

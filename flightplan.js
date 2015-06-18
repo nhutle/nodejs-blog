@@ -12,14 +12,22 @@ plan.target('staging', [{
   username: username,
   agent: process.env.SSH_AUTH_SOCK,
   privateKey: '/home/vagrant/.ssh/id_rsa'
-}]);
+}], {
+  branch: 'develop',
+  env: 'staging',
+  port: 3000
+});
 
 plan.target('production', [{
   host: 'localhost',
   username: username,
   agent: process.env.SSH_AUTH_SOCK,
   privateKey: '/home/vagrant/.ssh/id_rsa'
-}]);
+}], {
+  branch: 'master',
+  env: 'production',
+  port: 3000
+});
 
 plan.remote('install', function(remote) {
   remote.log('----- Install...');
@@ -30,22 +38,37 @@ plan.remote('install', function(remote) {
 
 plan.remote('server', function(remote) {
   remote.log('----- Server...');
+  var env = plan.runtime.options.env,
+    port = plan.runtime.options.port;
+
   remote.with('cd nodejs-blog/scripts', function() {
-    remote.exec('chmod +x server.sh && sh ./server.sh');
+    remote.exec('chmod +x server.sh && sh ./server.sh' + ' ' + env + ' ' + port, {
+      failsafe: true
+    });
   });
 });
 
 plan.remote('deploy', function(remote) {
   remote.log('----- Deploy...');
+  var branch = plan.runtime.options.branch;
+
   remote.with('cd nodejs-blog/scripts', function() {
-    remote.exec('chmod +x deploy.sh && sh ./deploy.sh');
+    remote.exec('chmod +x deploy.sh && sh ./deploy.sh' + ' ' + branch, {
+      failsafe: true
+    });
   });
 });
 
 plan.remote('init', function(remote) {
   remote.log('----- Initialize...');
-  remote.with('cd nodejs-blog/scripts', function(){
-    remote.exec('chmod +x init.sh && sh ./init.sh');
+  var branch = plan.runtime.options.branch,
+    env = plan.runtime.options.env,
+    port = plan.runtime.options.port;
+
+  remote.with('cd nodejs-blog/scripts', function() {
+    remote.exec('chmod +x init.sh && sh ./init.sh' + ' ' + branch + ' ' + env + ' ' + port, {
+      failsafe: true
+    });
   });
 });
 
@@ -56,8 +79,12 @@ plan.remote('cloneSource', function(remote) {
 
 plan.remote('pullSource', function(remote) {
   remote.log('----- Pull source code from github...');
-  remote.with('cd nodejs-blog', function(){
-    remote.exec('git pull origin master');
+  var branch = plan.runtime.options.branch;
+
+  remote.with('cd nodejs-blog', function() {
+    remote.exec('git pull origin master' + ' ' + branch, {
+      failsafe: true
+    });
   });
 });
 
@@ -70,4 +97,3 @@ plan.remote(function(remote) {
 plan.local(function(local) {
   // nothing
 });
-
