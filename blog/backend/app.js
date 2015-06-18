@@ -6,12 +6,13 @@ var express = require('express'),
   cookieParser = require('cookie-parser'),
   bodyParser = require('body-parser'),
   session = require('express-session'),
+  mongoose = require('mongoose'),
   MongoStore = require('connect-mongo')(session),
   rfr = require('rfr'),
   config = rfr('utils/config'),
+  Server = rfr('server/index'),
 
-  app = express(),
-  Server = rfr('server');
+  app = express();
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -31,7 +32,7 @@ app.use(session({
   saveUninitialized: false, // don't create session until something stored
   resave: false, //don't save session if unmodified
   store: new MongoStore({
-    url: app.get('env') === 'production' ? config.get('database:production:connectionString') : config.get('database:staging:connectionString'),
+    mongooseConnection: mongoose.connection,
     ttl: 14 * 24 * 60 * 60 // = 14 days. Default
   })
 }));
@@ -40,7 +41,7 @@ app.use(session({
 app.use(multer({
   dest: 'public/images',
   // putSingleFilesInArray: true,
-  rename: function (fieldname, filename) {
+  rename: function(fieldname, filename) {
     return filename.replace(/\W+/g, '-').toLowerCase() + Date.now()
   }
 }));

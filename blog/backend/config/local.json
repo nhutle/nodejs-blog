@@ -5,6 +5,9 @@
     },
     "production": {
       "connectionString": "mongodb://localhost/blogPro"
+    },
+    "testing": {
+      "connectionString": "mongodb://localhost/blogTest"
     }
   },
   "secretJWT": "bd2bc693e047f52bb7c9eea04960594552f0d4",

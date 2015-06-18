@@ -8,8 +8,8 @@ echo "$port";
 
 if [ ! "$env" ]
   then
-      env="development"
-      echo "env=development"
+      env="staging"
+      echo "env=staging"
 fi
 
 if [ ! "$port" ]

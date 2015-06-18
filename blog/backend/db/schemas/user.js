@@ -20,7 +20,7 @@ UserSchema = new Schema({
 });
 
 UserSchema.plugin(uniqueValidator, {
-  message: 'Error, expected {PATH} to be unique.'
+  message: 'unique'
 });
 User = mongoose.model('User', UserSchema);
 

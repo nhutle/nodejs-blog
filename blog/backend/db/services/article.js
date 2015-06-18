@@ -99,11 +99,9 @@ Article = Base.extend({
           if (err) {
             return callback(err);
           }
-
           if (!article) {
             return callback(new Error('no article'));
           }
-
           callback(null, article);
         });
       },
@@ -112,11 +110,9 @@ Article = Base.extend({
           if (err) {
             return callback(err);
           }
-
           if (!user) {
             return callback(null, article);
           }
-
           article = article.toJSON();
           article.isEditable = article.userId === opts.req.session.userId ? true : false;
           article.owner = user.fullname;

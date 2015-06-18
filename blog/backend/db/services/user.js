@@ -83,12 +83,18 @@ User = Base.extend({
       var signUptoken;
 
       if (err) {
+        if (err.errors.email.message === 'unique') {
+          return callback({
+            message: 'Your email is belong another account',
+            status: 500
+          })
+        }
+
         return callback({
           message: 'A problem has been occurred during processing your data',
           status: 500
         });
       }
-
       signUptoken = token.geneToken(user);
       mailer.sendMail(opts.req, user, signUptoken, callback);
     });
