@@ -3,14 +3,14 @@ var jwt = require('jsonwebtoken'),
   config = rfr('utils/config'),
   token = {};
 
-token.geneToken = function(user) {
-  return jwt.sign(user, config.get('secretJWT'), {
-    expiresInMinutes: 30
+token.geneToken = function(data, expTime) {
+  return jwt.sign(data, config.get('secretJWT'), {
+    expiresInMinutes: expTime
   });
 };
 
-token.verifyToken = function(signUpToken, callback) {
-  jwt.verify(signUpToken, config.get('secretJWT'), callback);
+token.verifyToken = function(token, callback) {
+  jwt.verify(token, config.get('secretJWT'), callback);
 };
 
 module.exports = token;

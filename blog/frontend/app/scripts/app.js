@@ -3,6 +3,7 @@
 
   angular
     .module('blogApp', [
+      'ngCookies',
       'ui.router',
       'restangular',
       'LocalStorageModule',
@@ -42,9 +43,19 @@
     .run([
       '$rootScope',
       '$state',
-      'SessionService',
-      function($rootScope, $state, SessionService) {
-        $rootScope.user = SessionService.getUser();
+      'TokenService',
+      'UserService',
+      function($rootScope, $state, TokenService, UserService) {
+        var token = TokenService.getToken();
+
+        if (token) {
+          UserService.authen(token).then(function(user) {
+            $rootScope.user = user;
+          }, function(err) {
+            TokenService.removeToken();
+          });
+        }
+
         $rootScope.$on('$stateChangeStart', function(event, toState) {
           if (toState.isAuthRequired && $rootScope.user === null) {
             event.preventDefault();

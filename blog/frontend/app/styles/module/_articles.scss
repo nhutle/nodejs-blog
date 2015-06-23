@@ -1,11 +1,9 @@
 .detail-link {
   margin-left: 30px;
 }
-
 .total-comments {
   color: $link;
 }
-
 .media-photo {
   a {
     display: block;
@@ -17,22 +15,18 @@
     height: 100%;
   }
 }
-
 .article {
   padding: 10px 0;
   + .article {
     margin-top: 10px;
   }
 }
-
 .comment-list {
   margin-top: 20px;
 }
-
 .paginator {
   margin: 0 auto;
 }
-
 .pagin-disabled > a {
   pointer-events: none;
   cursor: not-allowed !important;

@@ -39,7 +39,7 @@
           return Users.customPOST(usrInfo, 'signup');
         };
 
-        UserService.verifyAcc = function(token) {
+        UserService.authen = function(token) {
           Restangular.addFullRequestInterceptor(function(element, operation, route, url, headers, params, httpConfig) {
             headers = headers || {};
             if (token) {
@@ -51,8 +51,8 @@
             };
           });
 
-          return Users.customGET('verify');
-        }
+          return Users.customGET('authen');
+        };
 
         return UserService;
       }

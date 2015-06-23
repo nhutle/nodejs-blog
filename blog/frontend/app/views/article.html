@@ -19,7 +19,7 @@
       <div class="article-content">
         <p>{{article.content}}</p>
       </div>
-      <div class="pull-right" ng-if="article.isEditable && user.isAuth">
+      <div class="pull-right" ng-if="article.isEditable && user._id">
         <a class="btn btn-primary" ui-sref="editArticle({_id: article._id})">
           <span class="glyphicon glyphicon-pencil">&nbsp;Edit</span>
         </a>
@@ -30,7 +30,7 @@
     </div>
     <div class="comments">
       <h3>Comments</h3>
-      <div class="user-comment clearfix" ng-if="user.isAuth">
+      <div class="user-comment clearfix" ng-if="user._id">
         <div class="media">
           <div class="media-left comment-photo">
             <a href="javascript:void(0);">

@@ -14,7 +14,7 @@
             controller: 'UserCtrl',
             onEnter: function($rootScope, $stateParams, UserService) {
               if ($stateParams.token) {
-                UserService.verifyAcc($stateParams.token).then(function() {
+                UserService.authen($stateParams.token).then(function() {
                   $rootScope.isVerified = true;
                 }, function(err) {
                   console.log(err);

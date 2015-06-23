@@ -57,7 +57,7 @@ User = Base.extend({
         userInfo.fullname = user.fullname;
         userInfo.avatar = user.avatar;
         userInfo._id = user._id;
-        userInfo.isAuth = true;
+        userInfo.token = token.geneToken(userInfo, 20160);
         callback(null, userInfo);
       }));
     });
@@ -65,12 +65,11 @@ User = Base.extend({
 
   logout: function(opts, callback) {
     opts.req.session.destroy(function(err) {
-      if (err) {
+      if (err)
         return callback({
           message: 'A problem has been occurred during processing your data',
           status: 500
         });
-      }
 
       callback(null);
     });
@@ -83,45 +82,48 @@ User = Base.extend({
       var signUptoken;
 
       if (err) {
-        if (err.errors.email.message === 'unique') {
+        if (err.errors.email.message === 'unique')
           return callback({
             message: 'Your email is belong another account',
             status: 500
           })
-        }
 
         return callback({
           message: 'A problem has been occurred during processing your data',
           status: 500
         });
       }
-      signUptoken = token.geneToken(user);
+      signUptoken = token.geneToken(user, 30);
       mailer.sendMail(opts.req, user, signUptoken, callback);
     });
   },
 
-  verifyAcc: function(opts, callback) {
-    var signUptoken = opts.req.body.token || opts.req.query.token || opts.req.headers['authorization'],
+  authen: function(opts, callback) {
+    var tokenVal = opts.req.body.token || opts.req.query.token || opts.req.headers['authorization'],
       self = this;
 
-    if (!signUptoken) {
+    if (!tokenVal)
       return callback({
         message: 'There is no token provided',
         status: 400
       });
-    } else {
-      token.verifyToken(signUptoken, function(err, decoded) {
-        if (err) {
-          return callback({
-            message: 'A problem has been occurred during processing your data',
-            status: 500
-          });
-        }
 
-        decoded.isActivated = true;
-        self.update(decoded._id, decoded, callback);
-      });
-    }
+    console.log(token);
+    token.verifyToken(tokenVal, function(err, decodedUser) {
+      if (err) {
+        console.log(err);
+        return callback({
+          message: 'A problem has been occurred during processing your data',
+          status: 500
+        });
+      }
+
+      if (decodedUser.isActivated)
+        return callback(null, decodedUser);
+
+      decodedUser.isActivated = true;
+      self.update(decodedUser._id, decodedUser, callback);
+    });
   }
 });
 

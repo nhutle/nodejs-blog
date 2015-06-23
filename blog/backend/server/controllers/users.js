@@ -26,9 +26,9 @@ User = Base.extend({
       fn: 'upload'
     },
 
-    'verify': {
+    'authen': {
       method: 'get',
-      fn: 'verifyAcc'
+      fn: 'authen'
     }
   },
 
@@ -50,8 +50,8 @@ User = Base.extend({
     });
   },
 
-  verifyAcc: function(opts, callback) {
-    this.getService().verifyAcc(opts, callback);
+  authen: function(opts, callback) {
+    this.getService().authen(opts, callback);
   }
 });
 

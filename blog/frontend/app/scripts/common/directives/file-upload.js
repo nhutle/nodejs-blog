@@ -4,9 +4,7 @@
   angular
     .module('directives')
     .directive('fileUpload', [
-
       function() {
-
         return {
           link: function(scope, el, attrs) {
             el.bind('change', function(event) {
