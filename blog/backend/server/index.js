@@ -35,6 +35,7 @@ Server = function(opts) {
         if (err) {
           return res.status(err.status || 500).send(err);
         }
+
         res.status(200).send(results);
       });
     };

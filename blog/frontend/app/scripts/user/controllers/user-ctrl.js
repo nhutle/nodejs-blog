@@ -8,17 +8,18 @@
       '$scope',
       '$state',
       'UserService',
-      'TokenService',
-      function($rootScope, $scope, $state, UserService, TokenService) {
+      'JwtService',
+      function($rootScope, $scope, $state, UserService, JwtService) {
         $scope.login = function(email, password) {
           UserService.login(email, password).then(function(user) {
             // set token to cookie
-            TokenService.setToken(user.token);
+            JwtService.setToken(user.token);
 
-            $rootScope.user = {};
-            $rootScope.user._id = user._id,
-            $rootScope.user.fullname = user.fullname,
-            $rootScope.user.avatar = user.avatar
+            $rootScope.user = {
+              _id: user._id,
+              fullname: user.fullname,
+              avatar: user.avatar
+            };
             $rootScope.isReg = false;
             $rootScope.isVerified = false;
 
@@ -31,7 +32,7 @@
         $scope.logout = function() {
           UserService.logout().then(function() {
             $rootScope.user = null;
-            TokenService.removeToken();
+            JwtService.removeToken();
           }, function(err) {
             $scope.errMsg = err.data.message;
           });

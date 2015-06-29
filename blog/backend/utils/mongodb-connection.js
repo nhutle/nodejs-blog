@@ -5,7 +5,17 @@ var mongoose = require('mongoose'),
   App = {};
 
 App.getDB = function() {
-  return process.env.NODE_ENV === 'production' ? config.get('database:production:connectionString') : config.get('database:staging:connectionString');
+  var connStr;
+
+  if (process.env.NODE_ENV === 'production') {
+    connStr = config.get('database:production:connectionString');
+  } else if (process.env.NODE_ENV === 'staging') {
+    connStr = config.get('database:staging:connectionString');
+  } else {
+    connStr = config.get('database:testing:connectionString');
+  }
+
+  return connStr;
 };
 
 App.init = function(callback) {
@@ -20,6 +30,10 @@ App.init = function(callback) {
     log.info('connect to mongo success');
     callback && callback(); // if callback is existing -> call it.
   });
+};
+
+App.close = function(callback) {
+  mongoose.connection.close(callback);
 };
 
 module.exports = App;

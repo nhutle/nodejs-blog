@@ -38,9 +38,8 @@ var oop = require('node-g3').oop,
 
     update: function(id, data, callback) {
       this.modelClass.findById(id, function(err, model) {
-        if (err || !model) {
+        if (err || !model)
           return callback(err);
-        }
 
         // set update value
         _.each(model.toObject(), function(value, key) {

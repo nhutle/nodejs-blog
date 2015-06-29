@@ -6,7 +6,6 @@
       'ngCookies',
       'ui.router',
       'restangular',
-      'LocalStorageModule',
       'common',
       'blogApp.article',
       'blogApp.user',
@@ -15,9 +14,9 @@
     .config([
       '$urlRouterProvider',
       '$stateProvider',
+      '$httpProvider',
       'RestangularProvider',
-      'localStorageServiceProvider',
-      function($urlRouterProvider, $stateProvider, RestangularProvider, localStorageServiceProvider) {
+      function($urlRouterProvider, $stateProvider, $httpProvider, RestangularProvider) {
         $urlRouterProvider.otherwise('/articles');
         $stateProvider
           .state('main', {
@@ -36,23 +35,34 @@
             }
           });
         RestangularProvider.setBaseUrl('/api/');
-        localStorageServiceProvider.setStorageType('sessionStorage');
-        localStorageServiceProvider.setPrefix('ls');
+        $httpProvider.interceptors.push(['$q', '$location', 'JwtService',
+          function($q, $location, JwtService) {
+            return {
+              'responseError': function(response) {
+                if (response.status === 401)
+                  JwtService.removeToken();
+
+                return $q.reject(response);
+              }
+            };
+          }
+        ]);
+        $httpProvider.interceptors.push('JwtInterceptor');
       }
     ])
     .run([
       '$rootScope',
       '$state',
-      'TokenService',
+      'JwtService',
       'UserService',
-      function($rootScope, $state, TokenService, UserService) {
-        var token = TokenService.getToken();
+      function($rootScope, $state, JwtService, UserService) {
+        var token = JwtService.getToken();
 
         if (token) {
           UserService.authen(token).then(function(user) {
             $rootScope.user = user;
           }, function(err) {
-            TokenService.removeToken();
+            JwtService.removeToken();
           });
         }
 

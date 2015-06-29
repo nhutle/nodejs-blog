@@ -1,5 +1,6 @@
 var nodemailer = require('nodemailer'),
   hbs = require('nodemailer-express-handlebars'),
+  path = require('path'),
   rfr = require('rfr'),
   config = rfr('utils/config'),
   transporter,
@@ -22,6 +23,12 @@ tmpOptions = {
   extName: '.hbs'
 };
 
+// console.log(process.env.NODE_ENV);
+if (!process.env.NODE_ENV) {
+  tmpOptions.viewEngine.layoutsDir = path.join(__dirname, '../views');
+  tmpOptions.viewPath = path.join(__dirname, '../views');
+}
+
 // default mail options
 mailOptions = {
   from: 'Online Blog <ts.acc.27.05.2015@gmail.com>',
@@ -42,14 +49,13 @@ mailer.sendMail = function(req, user, token, callback) {
   };
 
   transporter.sendMail(mailOptions, function(err, info) {
-    if (err) {
+    if (err)
       return callback({
         message: 'A problem has been occurred during processing your data',
         status: 500
       });
-    }
 
-    callback(null);
+    return callback && callback(null);
   });
 };
 

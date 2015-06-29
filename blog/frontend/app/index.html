@@ -31,7 +31,6 @@
     <script src="bower_components/lodash/dist/lodash.compat.js"></script>
     <script src="bower_components/restangular/dist/restangular.js"></script>
     <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
-    <script src="bower_components/angular-local-storage/dist/angular-local-storage.js"></script>
     <script src="bower_components/angular-cookies/angular-cookies.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
@@ -42,12 +41,16 @@
 
         <!-- common -->
         <script src="scripts/common/common.js"></script>
-        <!--filters-->
+        <!-- filters -->
         <script src="scripts/common/filters/filters.js"></script>
         <script src="scripts/common/filters/cmt-filter.js"></script>
-         <!--directives-->
+         <!-- directives -->
         <script src="scripts/common/directives/directives.js"></script>
         <script src="scripts/common/directives/file-upload.js"></script>
+        <!-- services -->
+        <script src="scripts/common/services/services.js"></script>
+        <script src="scripts/common/services/jwt-interceptor.js"></script>
+        <script src="scripts/common/services/jwt-service.js"></script>
 
         <!-- article -->
         <script src="scripts/article/article.js"></script>
@@ -57,12 +60,11 @@
         <script src="scripts/article/controllers/edit-article-ctrl.js"></script>
         <script src="scripts/article/services/articles-service.js"></script>
 
-        <!-- auth -->
+        <!-- user -->
         <script src="scripts/user/user.js"></script>
         <script src="scripts//user/controllers/user-ctrl.js"></script>
         <script src="scripts//user/controllers/signup-ctrl.js"></script>
         <script src="scripts/user/services/user-service.js"></script>
-        <script src="scripts/user/services/user-token.js"></script>
 
         <script src="scripts/app.js"></script>
         <!-- endbuild -->

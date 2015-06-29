@@ -40,17 +40,6 @@
         };
 
         UserService.authen = function(token) {
-          Restangular.addFullRequestInterceptor(function(element, operation, route, url, headers, params, httpConfig) {
-            headers = headers || {};
-            if (token) {
-              headers.Authorization = token;
-            }
-
-            return {
-              headers: headers
-            };
-          });
-
           return Users.customGET('authen');
         };
 
@@ -58,3 +47,14 @@
       }
     ]);
 })(angular);
+
+// Restangular.addFullRequestInterceptor(function(element, operation, route, url, headers, params, httpConfig) {
+//   headers = headers || {};
+//   if (token) {
+//     headers.Authorization = token;
+//   }
+
+//   return {
+//     headers: headers
+//   };
+// });

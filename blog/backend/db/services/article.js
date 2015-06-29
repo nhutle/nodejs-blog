@@ -21,18 +21,15 @@ Article = Base.extend({
       limit = opts.query.limit;
 
     async.parallel([
-
       function(callback) {
         self.getArticlesInfo(curPage, limit, callback);
       },
-
       function(callback) {
         self.getTotalPage(callback);
       }
     ], function(err, results) {
-      if (err) {
+      if (err)
         return callback(err);
-      }
 
       results[1] = Math.ceil(results[1] / limit);
       callback(null, results);
@@ -43,9 +40,8 @@ Article = Base.extend({
     this
       .modelClass
       .count(function(err, total) {
-        if (err) {
+        if (err)
           return callback(err);
-        }
 
         callback(null, total);
       });
@@ -79,9 +75,8 @@ Article = Base.extend({
         self.getArticleCmts(opts, callback);
       }
     }, function(err, results) {
-      if (err) {
+      if (err)
         return callback(err);
-      }
 
       results.article.cmts = results.cmts;
       callback(null, results.article);
@@ -140,22 +135,19 @@ Article = Base.extend({
         }, function(err, cmts) {
           var asyncUserTasks = [];
 
-          if (err) {
+          if (err)
             return callback(err);
-          }
 
           _.each(cmts, function(cmt) {
             var asyncUserTask = function(callback) {
               userService.findById(cmt.userId, function(err, user) {
                 var cmtUser = {};
 
-                if (err) {
+                if (err)
                   return callback(err);
-                }
 
-                if (!user) {
+                if (!user)
                   return callback(null, cmtUser);
-                }
 
                 cmtUser.content = cmt.content;
                 cmtUser._id = cmt._id;

@@ -34,7 +34,11 @@ app.use(session({
   store: new MongoStore({
     mongooseConnection: mongoose.connection,
     ttl: 14 * 24 * 60 * 60 // = 14 days. Default
-  })
+  }),
+  cookie: { // secure cookie
+    httpOnly: true,
+    secure: true
+  }
 }));
 
 /*upload file*/

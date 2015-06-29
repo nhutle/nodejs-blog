@@ -2,25 +2,25 @@
   'use strict';
 
   angular
-    .module('blogApp.user')
-    .factory('TokenService', [
+    .module('services')
+    .factory('JwtService', [
       '$cookies',
       function($cookies) {
-        var TokenService = {};
+        var JwtService = {};
 
-        TokenService.setToken = function(token) {
+        JwtService.setToken = function(token) {
           $cookies.put('token', token);
         };
 
-        TokenService.getToken = function() {
+        JwtService.getToken = function() {
           return $cookies.get('token');
         };
 
-        TokenService.removeToken = function() {
+        JwtService.removeToken = function() {
           $cookies.remove('token');
         };
 
-        return TokenService;
+        return JwtService;
       }
     ]);
 })(angular);

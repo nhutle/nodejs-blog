@@ -17,41 +17,36 @@ User = Base.extend({
     }, function(err, user) {
       var userInfo = {};
 
-      if (err) {
+      if (err)
         return callback({
           message: 'A problem has been occurred during processing your data',
           status: 500
         });
-      }
 
-      if (!user) {
+      if (!user)
         return callback({
           message: 'Incorrect email',
           status: 401
         });
-      }
 
-      if (!user.isActivated) {
+      if (!user.isActivated)
         return callback({
-          message: 'Inactivated user',
+          message: 'Please activate your account before trying to login',
           status: 401
         });
-      }
 
       if (!crypt.comparePwd(opts.data.password, user.password, function(err, result) {
-        if (err) {
+        if (err)
           return callback({
             message: 'A problem has been occurred during processing your data',
             status: 500
           });
-        }
 
-        if (!result) {
+        if (!result)
           return callback({
             message: 'Incorrect password',
             status: 401
           });
-        }
 
         opts.req.session.userId = user._id;
         userInfo.fullname = user.fullname;
@@ -99,27 +94,28 @@ User = Base.extend({
   },
 
   authen: function(opts, callback) {
-    var tokenVal = opts.req.body.token || opts.req.query.token || opts.req.headers['authorization'],
+    var tokenVal = opts.req.body.token || opts.req.query.token || opts.req.headers['Authorization'],
       self = this;
 
     if (!tokenVal)
       return callback({
-        message: 'There is no token provided',
+        message: 'There is no provided token',
         status: 400
       });
 
-    console.log(token);
     token.verifyToken(tokenVal, function(err, decodedUser) {
-      if (err) {
-        console.log(err);
+      if (err)
         return callback({
           message: 'A problem has been occurred during processing your data',
           status: 500
         });
-      }
 
       if (decodedUser.isActivated)
-        return callback(null, decodedUser);
+        return callback(null, {
+          _id: decodedUser._id,
+          fullname: decodedUser.fullname,
+          avatar: decodedUser.avatar
+        });
 
       decodedUser.isActivated = true;
       self.update(decodedUser._id, decodedUser, callback);
@@ -128,3 +124,29 @@ User = Base.extend({
 });
 
 module.exports = User;
+
+
+//
+//
+//
+// //  activateAcc: function(opts, callback) {
+//     var tokenVal = opts.req.body.token || opts.req.query.token || opts.req.headers['authorization'],
+//       self = this;
+
+//     if (!tokenVal)
+//       return callback({
+//         message: 'There is no token provided',
+//         status: 400
+//       });
+
+//     token.verifyToken(tokenVal, function(err, decodedUser) {
+//       if (err)
+//         return callback({
+//           message: 'A problem has been occurred during processing your data',
+//           status: 500
+//         });
+
+//       decodedUser.isActivated = true;
+//       self.update(decodedUser._id, decodedUser, callback);
+//     });
+//   }

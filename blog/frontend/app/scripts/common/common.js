@@ -4,6 +4,7 @@
   angular
     .module('common', [
       'filters',
-      'directives'
+      'directives',
+      'services'
     ]);
 })(angular);

@@ -25,7 +25,6 @@ module.exports = function(config) {
       'bower_components/lodash/dist/lodash.compat.js',
       'bower_components/restangular/dist/restangular.js',
       'bower_components/angular-ui-router/release/angular-ui-router.js',
-      'bower_components/angular-local-storage/dist/angular-local-storage.js',
       'bower_components/angular-cookies/angular-cookies.js',
       'bower_components/angular-mocks/angular-mocks.js',
       // endbower
