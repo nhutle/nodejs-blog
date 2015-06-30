@@ -21,6 +21,7 @@ Article = Base.extend({
       limit = opts.query.limit;
 
     async.parallel([
+
       function(callback) {
         self.getArticlesInfo(curPage, limit, callback);
       },
@@ -28,10 +29,10 @@ Article = Base.extend({
         self.getTotalPage(callback);
       }
     ], function(err, results) {
-      if (err)
-        return callback(err);
+      if (err) return callback(err);
 
       results[1] = Math.ceil(results[1] / limit);
+
       callback(null, results);
     });
   },
@@ -40,8 +41,7 @@ Article = Base.extend({
     this
       .modelClass
       .count(function(err, total) {
-        if (err)
-          return callback(err);
+        if (err) return callback(err);
 
         callback(null, total);
       });
@@ -56,9 +56,7 @@ Article = Base.extend({
       .skip((curPage - 1) * limit)
       .limit(limit)
       .exec(function(err, articles) {
-        if (err) {
-          return callback(err);
-        }
+        if (err) return callback(err);
 
         cmtService.countCmtArticles(articles, callback);
       });
@@ -75,8 +73,7 @@ Article = Base.extend({
         self.getArticleCmts(opts, callback);
       }
     }, function(err, results) {
-      if (err)
-        return callback(err);
+      if (err) return callback(err);
 
       results.article.cmts = results.cmts;
       callback(null, results.article);
@@ -91,23 +88,23 @@ Article = Base.extend({
 
       function(callback) {
         self.findById(articleId, function(err, article) {
-          if (err) {
-            return callback(err);
-          }
-          if (!article) {
-            return callback(new Error('no article'));
-          }
+          if (err) return callback(err);
+
+          if (!article)
+            return callback({
+              status: 404,
+              message: 'no article'
+            });
+
           callback(null, article);
         });
       },
       function(article, callback) {
         userService.findById(article.userId, function(err, user) {
-          if (err) {
-            return callback(err);
-          }
-          if (!user) {
-            return callback(null, article);
-          }
+          if (err) return callback(err);
+
+          if (!user) return callback(null, article);
+
           article = article.toJSON();
           article.isEditable = article.userId === opts.req.session.userId ? true : false;
           article.owner = user.fullname;
@@ -115,9 +112,7 @@ Article = Base.extend({
         })
       }
     ], function(err, article) {
-      if (err) {
-        return callback(err);
-      }
+      if (err) return callback(err);
 
       callback(null, article);
     });
@@ -135,19 +130,16 @@ Article = Base.extend({
         }, function(err, cmts) {
           var asyncUserTasks = [];
 
-          if (err)
-            return callback(err);
+          if (err) return callback(err);
 
           _.each(cmts, function(cmt) {
             var asyncUserTask = function(callback) {
               userService.findById(cmt.userId, function(err, user) {
                 var cmtUser = {};
 
-                if (err)
-                  return callback(err);
+                if (err) return callback(err);
 
-                if (!user)
-                  return callback(null, cmtUser);
+                if (!user) return callback(null, cmtUser);
 
                 cmtUser.content = cmt.content;
                 cmtUser._id = cmt._id;
@@ -155,6 +147,7 @@ Article = Base.extend({
                   avatar: user.avatar,
                   fullname: user.fullname
                 };
+
                 callback(null, cmtUser);
               })
             };
@@ -163,18 +156,18 @@ Article = Base.extend({
           });
 
           async.parallel(asyncUserTasks, function(err, cmts) {
-            if (err) {
-              return callback(err);
-            }
+            if (err) return callback(err);
 
             callback(null, cmts);
           });
         });
       }
     ], function(err, cmts) {
-      if (err) {
-        return callback(new Error('unknown err'));
-      }
+      if (err)
+        return callback({
+          status: 500,
+          message: 'There is an error occuring'
+        });
 
       callback(null, cmts);
     });

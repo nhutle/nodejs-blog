@@ -24,9 +24,7 @@ Comment = Base.extend({
     });
 
     async.parallel(countCmtTasks, function(err, articles) {
-      if (err) {
-        return callback(err);
-      }
+      if (err) return callback(err);
 
       callback(null, articles);
     });
@@ -40,7 +38,7 @@ Comment = Base.extend({
         return callback(err);
       }
 
-      article = article.toJSON();
+      article = typeof article.toJSON === 'function' ? article.toJSON() : article;
       article.totalCmts = totalCmts;
       callback(null, article);
     });
@@ -64,9 +62,17 @@ Comment = Base.extend({
 
       function(callback) {
         userService.findById(cmt.userId, function(err, user) {
-          if (err) {
-            return callback(err);
-          }
+          if (err)
+            return callback({
+              status: 500,
+              message: 'Unknown error'
+            });
+
+          if (!user)
+            return callback({
+              status: 404,
+              message: 'The comment does not belong any user'
+            });
 
           callback(null, user);
         })
@@ -81,6 +87,8 @@ Comment = Base.extend({
         avatar: results[1].avatar,
         fullname: results[1].fullname
       };
+
+      console.log(results);
 
       callback(null, results[0]);
     });
