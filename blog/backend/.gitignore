@@ -4,4 +4,4 @@ helper
 routes
 app-backup.js
 .git
-test/unit-test/coverage
+test/*/coverage

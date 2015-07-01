@@ -26,23 +26,22 @@ Article = Base.extend({
         self.getArticlesInfo(curPage, limit, callback);
       },
       function(callback) {
-        self.getTotalPage(callback);
+        self.getTotalPage(limit, callback);
       }
     ], function(err, results) {
       if (err) return callback(err);
-
-      results[1] = Math.ceil(results[1] / limit);
 
       callback(null, results);
     });
   },
 
-  getTotalPage: function(callback) {
+  getTotalPage: function(limit, callback) {
     this
       .modelClass
       .count(function(err, total) {
         if (err) return callback(err);
 
+        total = Math.ceil(total / limit);
         callback(null, total);
       });
   },

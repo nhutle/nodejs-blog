@@ -35,7 +35,7 @@ User = Base.extend({
           status: 401
         });
 
-      if (!crypt.comparePwd(opts.data.password, user.password, function(err, result) {
+      crypt.comparePwd(opts.data.password, user.password, function(err, result) {
         if (err)
           return callback({
             message: 'A problem has been occurred during processing your data',
@@ -54,7 +54,7 @@ User = Base.extend({
         userInfo._id = user._id;
         userInfo.token = token.geneToken(userInfo, 20160);
         callback(null, userInfo);
-      }));
+      });
     });
   },
 
@@ -124,29 +124,3 @@ User = Base.extend({
 });
 
 module.exports = User;
-
-
-//
-//
-//
-// //  activateAcc: function(opts, callback) {
-//     var tokenVal = opts.req.body.token || opts.req.query.token || opts.req.headers['authorization'],
-//       self = this;
-
-//     if (!tokenVal)
-//       return callback({
-//         message: 'There is no token provided',
-//         status: 400
-//       });
-
-//     token.verifyToken(tokenVal, function(err, decodedUser) {
-//       if (err)
-//         return callback({
-//           message: 'A problem has been occurred during processing your data',
-//           status: 500
-//         });
-
-//       decodedUser.isActivated = true;
-//       self.update(decodedUser._id, decodedUser, callback);
-//     });
-//   }

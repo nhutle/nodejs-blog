@@ -5,6 +5,7 @@ var _ = require('underscore'),
   Router = rfr('server/router'),
   DatabaseManager = rfr('db'),
   mongoConnection = rfr('utils/mongodb-connection'),
+  log = rfr('utils/log'),
   Server;
 
 Server = function(opts) {
@@ -32,9 +33,10 @@ Server = function(opts) {
 
       self.router.handle(requestParams, function(err, results) {
         res.set('Content-Type', 'application/json');
-        if (err) {
-          return res.status(err.status || 500).send(err);
-        }
+        if (err)
+          return res.status(err.status || 500).send({
+            message: err.message
+          });
 
         res.status(200).send(results);
       });

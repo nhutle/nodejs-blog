@@ -45,7 +45,7 @@ describe('-- GET LIST OF ARTICLES UNIT TEST--', function() {
       expect(results).to.be.equal(undefined);
       done();
     })
-  })
+  });
 });
 
 describe('-- GET TOTAL PAGES UNIT TEST--', function() {
