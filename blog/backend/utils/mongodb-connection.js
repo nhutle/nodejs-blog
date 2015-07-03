@@ -33,6 +33,7 @@ App.init = function(callback) {
 };
 
 App.close = function(callback) {
+  log.info('close mongo connection');
   mongoose.connection.close(callback);
 };
 

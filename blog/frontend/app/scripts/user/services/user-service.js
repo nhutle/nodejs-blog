@@ -39,7 +39,7 @@
           return Users.customPOST(usrInfo, 'signup');
         };
 
-        UserService.authen = function(token) {
+        UserService.authen = function() {
           return Users.customGET('authen');
         };
 

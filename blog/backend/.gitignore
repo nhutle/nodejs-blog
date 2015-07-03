@@ -5,3 +5,4 @@ routes
 app-backup.js
 .git
 test/*/coverage
+coverage

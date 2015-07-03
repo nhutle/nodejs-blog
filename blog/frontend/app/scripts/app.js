@@ -35,8 +35,8 @@
             }
           });
         RestangularProvider.setBaseUrl('/api/');
-        $httpProvider.interceptors.push(['$q', '$location', 'JwtService',
-          function($q, $location, JwtService) {
+        $httpProvider.interceptors.push(['$q', 'JwtService',
+          function($q, JwtService) {
             return {
               'responseError': function(response) {
                 if (response.status === 401)
@@ -59,7 +59,7 @@
         var token = JwtService.getToken();
 
         if (token) {
-          UserService.authen(token).then(function(user) {
+          UserService.authen().then(function(user) {
             $rootScope.user = user;
           }, function(err) {
             JwtService.removeToken();

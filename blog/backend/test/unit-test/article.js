@@ -1,20 +1,16 @@
 var rfr = require('rfr'),
   async = require('async'),
-  chai = require('chai'),
-  async = require('async'),
+  expect = require('chai').expect,
+  ObjectID = require('mongodb').ObjectID,
   mongoose = require('mongoose'),
   mongoConnection = rfr('utils/mongodb-connection'),
   ArticleService = rfr('db/services/article'),
-  articleService = new ArticleService(),
-  expect = chai.expect;
+  articleService = new ArticleService();
 
+module.exports = function() {
 describe('-- GET LIST OF ARTICLES UNIT TEST--', function() {
   before(function(done) {
     mongoConnection.init(done);
-  });
-
-  after(function(done) {
-    mongoConnection.close(done);
   });
 
   it('should return list of articles', function(done) {
@@ -49,16 +45,10 @@ describe('-- GET LIST OF ARTICLES UNIT TEST--', function() {
 });
 
 describe('-- GET TOTAL PAGES UNIT TEST--', function() {
-  before(function(done) {
-    mongoConnection.init(done);
-  });
-
-  after(function(done) {
-    mongoConnection.close(done);
-  });
-
   it('should return a number of total page', function(done) {
-    articleService.getTotalPage(function(err, results) {
+    var limit = 5;
+
+    articleService.getTotalPage(limit, function(err, results) {
       expect(err).to.be.null;
       expect(results).to.be.an('number');
       done();
@@ -67,14 +57,6 @@ describe('-- GET TOTAL PAGES UNIT TEST--', function() {
 });
 
 describe('-- GET ARTICLES INFORMATION UNIT TEST--', function() {
-  before(function(done) {
-    mongoConnection.init(done);
-  });
-
-  after(function(done) {
-    mongoConnection.close(done);
-  });
-
   it('should return list of articles', function(done) {
     var curPage = 1,
       limit = 5;
@@ -98,7 +80,6 @@ describe('-- GET ARTICLE DETAIL UNIT TEST--', function() {
       photos: []
     };
 
-    mongoConnection.init();
     articleService.create(article, function(err, result) {
       article._id = result._id;
       done();
@@ -108,9 +89,7 @@ describe('-- GET ARTICLE DETAIL UNIT TEST--', function() {
   after(function(done) {
     articleService.removeByField({
       title: 'test title'
-    }, function(err, result) {
-      mongoConnection.close(done);
-    });
+    }, done);
   });
 
   it('should return detail of article', function(done) {
@@ -137,13 +116,12 @@ describe('-- GET ARTICLE INFO UNIT TEST--', function() {
   this.timeout(10000);
   before(function(done) {
     article = {
-      userId: mongoose.Types.ObjectId("51bb793aca2ab77a3200000d"),
+      userId: new ObjectID("51bb793aca2ab77a3200000d"),
       title: 'test title',
       content: 'test content',
       photos: []
     };
 
-    mongoConnection.init();
     articleService.create(article, function(err, result) {
       article._id = result._id;
       done();
@@ -153,9 +131,7 @@ describe('-- GET ARTICLE INFO UNIT TEST--', function() {
   after(function(done) {
     articleService.removeByField({
       title: 'test title'
-    }, function(err, result) {
-      mongoConnection.close(done);
-    });
+    }, done);
   });
 
   it('should return article\'s information', function(done) {
@@ -182,13 +158,12 @@ describe('-- GET ARTICLE\'s COMMENTS UNIT TEST--', function() {
   this.timeout(10000);
   before(function(done) {
     article = {
-      userId: mongoose.Types.ObjectId("51bb793aca2ab77a3200000d"),
+      userId: new ObjectID("51bb793aca2ab77a3200000d"),
       title: 'test title',
       content: 'test content',
       photos: []
     };
 
-    mongoConnection.init();
     articleService.create(article, function(err, result) {
       article._id = result._id;
       done();
@@ -220,3 +195,4 @@ describe('-- GET ARTICLE\'s COMMENTS UNIT TEST--', function() {
     });
   });
 });
+}
