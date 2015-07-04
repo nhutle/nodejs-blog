@@ -34,9 +34,7 @@ Comment = Base.extend({
     this.modelClass.count({
       articleId: article._id
     }, function(err, totalCmts) {
-      if (err) {
-        return callback(err);
-      }
+      if (err) return callback(err);
 
       article = typeof article.toJSON === 'function' ? article.toJSON() : article;
       article.totalCmts = totalCmts;
@@ -52,9 +50,7 @@ Comment = Base.extend({
 
       function(callback) {
         new self.modelClass(cmt).save(function(err, cmt) {
-          if (err) {
-            return callback(err);
-          }
+          if (err) return callback(err);
 
           callback(null, cmt);
         });
@@ -78,17 +74,13 @@ Comment = Base.extend({
         })
       }
     ], function(err, results) {
-      if (err) {
-        return callback(err);
-      }
+      if (err) return callback(err);
 
       results[0] = results[0].toJSON();
       results[0].user = {
         avatar: results[1].avatar,
         fullname: results[1].fullname
       };
-
-      console.log(results);
 
       callback(null, results[0]);
     });

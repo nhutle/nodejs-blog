@@ -43,9 +43,7 @@ var oop = require('node-g3').oop,
 
         // set update value
         _.each(model.toObject(), function(value, key) {
-          if (data && data[key]) {
-            model[key] = data[key];
-          }
+          if (data && data[key]) model[key] = data[key];
         });
 
         //save data

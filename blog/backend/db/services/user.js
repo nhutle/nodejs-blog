@@ -73,6 +73,7 @@ User = Base.extend({
   create: function(opts, callback) {
     opts.data.password = crypt.encrypt(opts.data.password);
     opts.data.isActivated = false;
+
     this.base(opts.data, function(err, user) {
       var signUptoken;
 

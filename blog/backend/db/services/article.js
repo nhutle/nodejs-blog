@@ -20,6 +20,12 @@ Article = Base.extend({
       curPage = opts.query.curPage,
       limit = opts.query.limit;
 
+    if (limit <= 0 || curPage <= 0)
+      return callback({
+        status: 400,
+        message: 'bad request'
+      });
+
     async.parallel([
 
       function(callback) {
@@ -102,7 +108,11 @@ Article = Base.extend({
         userService.findById(article.userId, function(err, user) {
           if (err) return callback(err);
 
-          if (!user) return callback(null, article);
+          if (!user)
+            return callback({
+              status: 400,
+              message: 'the article does not belong any user'
+            });
 
           article = article.toJSON();
           article.isEditable = article.userId === opts.req.session.userId ? true : false;
@@ -138,7 +148,11 @@ Article = Base.extend({
 
                 if (err) return callback(err);
 
-                if (!user) return callback(null, cmtUser);
+                if (!user)
+                  return callback({
+                    status: 404,
+                    message: 'the comment does not belong any user'
+                  });
 
                 cmtUser.content = cmt.content;
                 cmtUser._id = cmt._id;

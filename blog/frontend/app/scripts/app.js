@@ -59,7 +59,7 @@
         var token = JwtService.getToken();
 
         if (token) {
-          UserService.authen().then(function(user) {
+          UserService.authen(token).then(function(user) {
             $rootScope.user = user;
           }, function(err) {
             JwtService.removeToken();

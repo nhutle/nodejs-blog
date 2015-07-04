@@ -1,5 +1,4 @@
-var should = require('chai').should,
-  expect = require('chai').expect,
+var expect = require('chai').expect,
   rfr = require('rfr'),
   async = require('async'),
   mongoConnection = rfr('utils/mongodb-connection'),
@@ -13,70 +12,77 @@ var should = require('chai').should,
   articleService = new ArticleService();
 
 module.exports = function(api, server) {
-  describe('POST /comments', function() {
-    var comment, actUser;
+  var comment, actUser, optsAct, request;
 
+  request = {
+    protocol: 'http',
+    get: function(param) {
+      return 'localhost';
+    }
+  };
+  actUser = {
+    fullname: 'fullname test',
+    email: 'prohulocle@throam.com',
+    password: 'password test',
+    avatar: ''
+  };
+  optsAct = {
+    data: actUser,
+    req: request
+  };
+  article = {
+    title: 'test title',
+    content: 'test content',
+    photos: []
+  };
+
+  describe('POST /comments', function() {
     this.timeout(10000);
 
     before(function(done) {
-      var optsAct, request;
-
-      request = {
-        protocol: 'http',
-        get: function(param) {
-          return 'localhost';
-        }
-      };
-      actUser = {
-        fullname: 'fullname test',
-        email: 'prohulocle@throam.com',
-        password: 'password test',
-        avatar: ''
-      };
-      optsAct = {
-        data: actUser,
-        req: request
-      };
-      article = {
-        title: 'test title',
-        content: 'test content',
-        photos: []
-      };
-
       mongoConnection.init();
-      articleService.create(article, function(err, result) {
-        article._id = result._id;
 
-        async.waterfall([
+      async.waterfall([
+        function(callback) {
+          userService.create(optsAct, callback);
+        },
+        function(callback) {
+          userService.findOne({
+            email: actUser.email
+          }, function(err, user) {
+            if (err) return callback(err);
 
-          function(callback) {
-            userService.create(optsAct, callback);
-          },
-          function(callback) {
-            userService.findOne({
-              email: actUser.email
-            }, function(err, user) {
-              if (err) return callback(err);
+            actUser._id = user._id;
+            article.userId = mongoose.Types.ObjectId(user._id);
+            callback(null, user);
+          });
+        },
+        function(user, callback) {
+          optsAct.req.headers = {};
+          optsAct.req.headers['Authorization'] = token.geneToken(user, 30);
+          optsAct.req.body = {};
+          optsAct.req.query = {};
+          userService.authen(optsAct, function(err, result) {
+            if(err) return callback(err);
 
-              actUser._id = user._id;
-              callback(null, user);
-            });
-          },
-          function(user, callback) {
-            optsAct.req.headers = {};
-            optsAct.req.headers['Authorization'] = token.geneToken(user, 30);
-            optsAct.req.body = {};
-            optsAct.req.query = {};
-            userService.authen(optsAct, callback);
-          }
-        ], function(err, results) {
-          comment = {
-            userId: mongoose.Types.ObjectId(actUser._id),
-            articleId: mongoose.Types.ObjectId(article._id),
-            content: 'test comment'
-          };
-          done();
-        });
+            callback(null);
+          });
+        },
+        function(callback) {
+          articleService.create(article, function(err, result) {
+            if (err) return callback(err);
+
+            article._id = result._id;
+            callback(null);
+          });
+        }
+      ], function(err, results) {
+        comment = {
+          userId: mongoose.Types.ObjectId(actUser._id),
+          articleId: mongoose.Types.ObjectId(article._id),
+          content: 'test comment'
+        };
+        done();
       });
     });
 
@@ -91,6 +97,11 @@ module.exports = function(api, server) {
         function(callback) {
           userService.removeByField({
             email: 'prohulocle@throam.com'
+          }, callback);
+        },
+        function(callback) {
+          commentService.removeByField({
+            content: 'test comment'
           }, callback);
         }
       ], function(err, results) {
