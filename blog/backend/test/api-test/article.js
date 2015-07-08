@@ -6,11 +6,13 @@ var expect = require('chai').expect,
   mongoConnection = rfr('utils/mongodb-connection'),
   ArticleService = rfr('db/services/article'),
   UserService = rfr('db/services/user'),
+  CmtService = rfr('db/services/comment'),
   articleService = new ArticleService(),
-  userService = new UserService();
+  userService = new UserService(),
+  cmtService = new CmtService();
 
 module.exports = function(api, server) {
-  var article, actUser, optsAct, request;
+  var article, actUser, optsAct, request, comment, inUsrArticle;
 
   article = {
     title: 'test title',
@@ -32,6 +34,11 @@ module.exports = function(api, server) {
   optsAct = {
     data: actUser,
     req: request
+  };
+  inUsrArticle = {
+    title: 'test title inUsrArticle',
+    content: 'test content inUsrArticle',
+    photos: []
   };
 
   describe('GET /articles', function() {
@@ -85,6 +92,7 @@ module.exports = function(api, server) {
         function(user, callback) {
           optsAct.req.headers = {};
           optsAct.req.headers['Authorization'] = token.geneToken(user, 30);
+          optsAct.req.headers['authorization'] = token.geneToken(user, 30);
           optsAct.req.body = {};
           optsAct.req.query = {};
           userService.authen(optsAct, function(err, result) {
@@ -94,12 +102,32 @@ module.exports = function(api, server) {
           });
         },
         function(callback) {
+          article.userId = actUser._id;
           articleService.create(article, function(err, result) {
             if (err) return callback(err);
 
             article._id = result._id;
             callback(null);
           });
+        },
+        function(callback) {
+          articleService.create(inUsrArticle, function(err, result) {
+            if (err) return callback(err);
+
+            inUsrArticle._id = result._id;
+            callback(null);
+          });
+        },
+        function(callback) {
+          var opts = {
+            data: {
+              userId: mongoose.Types.ObjectId(actUser._id),
+              articleId: mongoose.Types.ObjectId(article._id),
+              content: 'test comment'
+            }
+          };
+
+          cmtService.addComment(opts, callback);
         }
       ], done);
     });
@@ -113,8 +141,18 @@ module.exports = function(api, server) {
           }, callback);
         },
         function(callback) {
+          articleService.removeByField({
+            title: 'test title inUsrArticle'
+          }, callback);
+        },
+        function(callback) {
           userService.removeByField({
             email: 'prohulocle@throam.com'
+          }, callback);
+        },
+        function(callback) {
+          cmtService.removeByField({
+            content: 'test comment'
           }, callback);
         }
       ], done);
@@ -132,12 +170,19 @@ module.exports = function(api, server) {
 
     it('should return 400 because the article does not belong any user', function(done) {
       api
-        .get('/articles/' + article._id)
+        .get('/articles/' + inUsrArticle._id)
         .set('Accept', 'application/json')
         .expect(400)
         .expect({
           message: 'the article does not belong any user'
         }, done);
+    });
+
+    it('should return 200', function(done) {
+      api
+        .get('/articles/' + article._id)
+        .set('Accept', 'application/json')
+        .expect(200, done);
     });
   });
 

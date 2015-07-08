@@ -4,10 +4,11 @@
   angular
     .module('blogApp.article')
     .controller('AddArticleCtrl', [
+      '$rootScope',
       '$scope',
       '$state',
       'ArticlesService',
-      function($scope, $state, ArticlesService) {
+      function($rootScope, $scope, $state, ArticlesService) {
         var isUploaded = false;
 
         $scope.article = {};
@@ -25,6 +26,8 @@
           if (!isUploaded) {
             return;
           }
+
+          article.userId = $rootScope.user._id;
           ArticlesService.addArticle(article).then(function() {
             $state.go('articles');
           }, function(err) {

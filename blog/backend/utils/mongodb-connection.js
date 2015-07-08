@@ -2,9 +2,9 @@ var mongoose = require('mongoose'),
   rfr = require('rfr'),
   config = rfr('utils/config'),
   log = rfr('utils/log'),
-  App = {};
+  mongoConn = {};
 
-App.getDB = function() {
+mongoConn.getDB = function() {
   var connStr;
 
   if (process.env.NODE_ENV === 'production') {
@@ -18,7 +18,7 @@ App.getDB = function() {
   return connStr;
 };
 
-App.init = function(callback) {
+mongoConn.init = function(callback) {
   var connectionString = this.getDB();
 
   mongoose.connect(connectionString, function(err) {
@@ -32,9 +32,10 @@ App.init = function(callback) {
   });
 };
 
-App.close = function(callback) {
+mongoConn.close = function(callback) {
   log.info('close mongo connection');
+
   mongoose.connection.close(callback);
 };
 
-module.exports = App;
+module.exports = mongoConn;

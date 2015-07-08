@@ -5,9 +5,43 @@ var rfr = require('rfr'),
   mongoose = require('mongoose'),
   mongoConnection = rfr('utils/mongodb-connection'),
   ArticleService = rfr('db/services/article'),
-  articleService = new ArticleService();
+  UserService = rfr('db/services/user'),
+  CmtService = rfr('db/services/comment'),
+  articleService = new ArticleService(),
+  userService = new UserService(),
+  cmtService = new CmtService(),
+  token = rfr('utils/token');
 
 module.exports = function() {
+  var article, actUser, optsAct, request, comment, inUsrArticle;
+
+  article = {
+    title: 'test title',
+    content: 'test content',
+    photos: []
+  };
+  request = {
+    protocol: 'http',
+    get: function(param) {
+      return 'localhost';
+    }
+  };
+  actUser = {
+    fullname: 'fullname test',
+    email: 'prohulocle@throam.com',
+    password: 'password test',
+    avatar: ''
+  };
+  optsAct = {
+    data: actUser,
+    req: request
+  };
+  inUsrArticle = {
+    title: 'test title inUsrArticle',
+    content: 'test content inUsrArticle',
+    photos: []
+  };
+
   describe('-- GET LIST OF ARTICLES UNIT TEST--', function() {
     before(function(done) {
       mongoConnection.init(done);
@@ -57,6 +91,21 @@ module.exports = function() {
         done();
       });
     });
+
+    it('should return bad request', function(done) {
+      var opts = {
+        query: {
+          curPage: -1,
+          limit: -5
+        }
+      };
+
+      articleService.getArticles(opts, function(err, results) {
+        expect(err.status).to.be.equal(400);
+        expect(err.message).to.be.equal('bad request');
+        done();
+      });
+    });
   });
 
   describe('-- GET TOTAL PAGES UNIT TEST--', function() {
@@ -79,6 +128,16 @@ module.exports = function() {
       articleService.getArticlesInfo(curPage, limit, function(err, results) {
         expect(err).to.be.null;
         expect(results).to.be.an('array');
+        done();
+      });
+    });
+
+    it('should return error', function(done) {
+      var curPage = 0,
+        limit = 5;
+
+      articleService.getArticlesInfo(curPage, limit, function(err, results) {
+        expect(err).to.be.an('object');
         done();
       });
     });
@@ -126,32 +185,113 @@ module.exports = function() {
   });
 
   describe('-- GET ARTICLE INFO UNIT TEST--', function() {
-    var article;
-
     this.timeout(10000);
+
     before(function(done) {
-      article = {
-        userId: new ObjectID("51bb793aca2ab77a3200000d"),
-        title: 'test title',
-        content: 'test content',
-        photos: []
+      async.waterfall([
+
+        function(callback) {
+          userService.create(optsAct, callback);
+        },
+        function(callback) {
+          userService.findOne({
+            email: actUser.email
+          }, function(err, user) {
+            if (err) return callback(err);
+
+            actUser._id = user._id;
+            callback(null, user);
+          });
+        },
+        function(user, callback) {
+          optsAct.req.headers = {};
+          optsAct.req.headers['Authorization'] = token.geneToken(user, 30);
+          optsAct.req.headers['authorization'] = token.geneToken(user, 30);
+          optsAct.req.body = {};
+          optsAct.req.query = {};
+          userService.authen(optsAct, function(err, result) {
+            if (err) return callback(err);
+
+            callback(null);
+          });
+        },
+        function(callback) {
+          article.userId = actUser._id;
+          articleService.create(article, function(err, result) {
+            if (err) return callback(err);
+
+            article._id = result._id;
+            callback(null);
+          });
+        },
+        function(callback) {
+          articleService.create(inUsrArticle, function(err, result) {
+            if (err) return callback(err);
+
+            inUsrArticle._id = result._id;
+            callback(null);
+          });
+        },
+        function(callback) {
+          var opts = {
+            data: {
+              userId: mongoose.Types.ObjectId(actUser._id),
+              articleId: mongoose.Types.ObjectId(article._id),
+              content: 'test comment'
+            }
+          };
+
+          cmtService.addComment(opts, callback);
+        }
+      ], done);
+    });
+
+    after(function(done) {
+      async.parallel([
+
+        function(callback) {
+          articleService.removeByField({
+            title: 'test title'
+          }, callback);
+        },
+        function(callback) {
+          articleService.removeByField({
+            title: 'test title inUsrArticle'
+          }, callback);
+        },
+        function(callback) {
+          userService.removeByField({
+            email: 'prohulocle@throam.com'
+          }, callback);
+        },
+        function(callback) {
+          cmtService.removeByField({
+            content: 'test comment'
+          }, callback);
+        }
+      ], done);
+    });
+
+    it('should return 404 on account of no article', function(done) {
+      var opts = {
+        action: mongoose.Types.ObjectId('51bb793aca2ab77a3200000d'),
+        req: {
+          session: {
+            userId: ''
+          }
+        }
       };
 
-      articleService.create(article, function(err, result) {
-        article._id = result._id;
+      articleService.getArticleInfo(opts, function(err, result) {
+        expect(err.status).to.be.equal(404);
+        expect(err.message).to.be.equal('no article');
         done();
       });
     });
 
-    after(function(done) {
-      articleService.removeByField({
-        title: 'test title'
-      }, done);
-    });
-
-    it('should return article\'s information', function(done) {
+    it('should return 400 because the article does not belong any user', function(done) {
       var opts = {
-        action: article._id,
+        action: mongoose.Types.ObjectId(inUsrArticle._id),
         req: {
           session: {
             userId: ''
@@ -165,35 +305,113 @@ module.exports = function() {
         done();
       });
     });
-  });
 
-  describe('-- GET ARTICLE\'s COMMENTS UNIT TEST--', function() {
-    var article;
-
-    this.timeout(10000);
-    before(function(done) {
-      article = {
-        userId: new ObjectID("51bb793aca2ab77a3200000d"),
-        title: 'test title',
-        content: 'test content',
-        photos: []
+    it('should return 200', function(done) {
+      var opts = {
+        action: mongoose.Types.ObjectId(article._id),
+        req: {
+          session: {
+            userId: ''
+          }
+        }
       };
 
-      articleService.create(article, function(err, result) {
-        article._id = result._id;
+      articleService.getArticleInfo(opts, function(err, result) {
+        expect(err).to.be.equal(null);
         done();
       });
     });
+  });
 
-    after(function(done) {
-      articleService.removeByField({
-        title: 'test title'
-      }, function(err, result) {
-        mongoConnection.close(done);
-      });
+  describe('-- GET ARTICLE\'s COMMENTS UNIT TEST--', function() {
+    this.timeout(10000);
+
+    before(function(done) {
+      async.waterfall([
+
+        function(callback) {
+          userService.create(optsAct, callback);
+        },
+        function(callback) {
+          userService.findOne({
+            email: actUser.email
+          }, function(err, user) {
+            if (err) return callback(err);
+
+            actUser._id = user._id;
+            callback(null, user);
+          });
+        },
+        function(user, callback) {
+          optsAct.req.headers = {};
+          optsAct.req.headers['Authorization'] = token.geneToken(user, 30);
+          optsAct.req.headers['authorization'] = token.geneToken(user, 30);
+          optsAct.req.body = {};
+          optsAct.req.query = {};
+          userService.authen(optsAct, function(err, result) {
+            if (err) return callback(err);
+
+            callback(null);
+          });
+        },
+        function(callback) {
+          article.userId = actUser._id;
+          articleService.create(article, function(err, result) {
+            if (err) return callback(err);
+
+            article._id = result._id;
+            callback(null);
+          });
+        },
+        function(callback) {
+          articleService.create(inUsrArticle, function(err, result) {
+            if (err) return callback(err);
+
+            inUsrArticle._id = result._id;
+            callback(null);
+          });
+        },
+        function(callback) {
+          var opts = {
+            data: {
+              userId: mongoose.Types.ObjectId(actUser._id),
+              articleId: mongoose.Types.ObjectId(article._id),
+              content: 'test comment'
+            }
+          };
+
+          cmtService.addComment(opts, callback);
+        }
+      ], done);
     });
 
-    it('should return article\'s information', function(done) {
+    after(function(done) {
+      async.parallel([
+
+        function(callback) {
+          articleService.removeByField({
+            title: 'test title'
+          }, callback);
+        },
+        function(callback) {
+          articleService.removeByField({
+            title: 'test title inUsrArticle'
+          }, callback);
+        },
+        function(callback) {
+          userService.removeByField({
+            email: 'prohulocle@throam.com'
+          }, callback);
+        },
+        function(callback) {
+          cmtService.removeByField({
+            content: 'test comment'
+          }, callback);
+        }
+      ], done);
+    });
+
+    it('should return cmts', function(done) {
       var opts = {
         action: article._id,
         req: {

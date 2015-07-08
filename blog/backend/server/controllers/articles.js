@@ -39,11 +39,6 @@ var rfr = require('rfr'),
       callback(null, {
         photos: fileNames
       });
-    },
-
-    post: function(opts, callback) {
-      opts.data.userId = opts.req.session.userId;
-      this.base(opts, callback);
     }
   });
 

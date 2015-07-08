@@ -23,11 +23,10 @@ tmpOptions = {
   extName: '.hbs'
 };
 
-// console.log(process.env.NODE_ENV);
-if (!process.env.NODE_ENV) {
-  tmpOptions.viewEngine.layoutsDir = path.join(__dirname, '../views');
-  tmpOptions.viewPath = path.join(__dirname, '../views');
-}
+// if (process.env.NODE_ENV === 'testing') {
+//   tmpOptions.viewEngine.layoutsDir = path.join(__dirname, '../views');
+//   tmpOptions.viewPath = path.join(__dirname, '../views');
+// }
 
 // default mail options
 mailOptions = {

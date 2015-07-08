@@ -24,6 +24,7 @@ var oop = require('node-g3').oop,
     },
 
     create: function(data, callback) {
+      console.log('data---->', data);
       new this.modelClass(data).save(callback);
     },
 

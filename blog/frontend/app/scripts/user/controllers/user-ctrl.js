@@ -20,6 +20,8 @@
               fullname: user.fullname,
               avatar: user.avatar
             };
+
+            console.log($rootScope.user);
             $rootScope.isReg = false;
             $rootScope.isVerified = false;
 

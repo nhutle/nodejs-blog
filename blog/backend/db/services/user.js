@@ -49,6 +49,8 @@ User = Base.extend({
           });
 
         opts.req.session.userId = user._id;
+        // console.log('opts.req.session.userId---usr---->', opts.req.session.userId);
+        userInfo._id = user._id;
         userInfo.fullname = user.fullname;
         userInfo.avatar = user.avatar;
         userInfo._id = user._id;
@@ -95,7 +97,7 @@ User = Base.extend({
   },
 
   authen: function(opts, callback) {
-    var tokenVal = opts.req.body.token || opts.req.query.token || opts.req.headers['Authorization'],
+    var tokenVal = opts.req.body.token || opts.req.query.token || opts.req.headers['Authorization'] || opts.req.headers['authorization'],
       self = this;
 
     if (!tokenVal)
@@ -107,7 +109,7 @@ User = Base.extend({
     token.verifyToken(tokenVal, function(err, decodedUser) {
       if (err)
         return callback({
-          message: 'A problem has been occurred during processing your data',
+          message: 'A problem has been occurred during processing data',
           status: 500
         });
 

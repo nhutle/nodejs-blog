@@ -81,6 +81,7 @@ Article = Base.extend({
       if (err) return callback(err);
 
       results.article.cmts = results.cmts;
+
       callback(null, results.article);
     });
   },
@@ -106,6 +107,8 @@ Article = Base.extend({
       },
       function(article, callback) {
         userService.findById(article.userId, function(err, user) {
+          // console.log('user--->', user);
+          // console.log('err--->', err);
           if (err) return callback(err);
 
           if (!user)
@@ -115,7 +118,9 @@ Article = Base.extend({
             });
 
           article = article.toJSON();
-          article.isEditable = article.userId === opts.req.session.userId ? true : false;
+          // console.log('opts.req.session.userId--->', opts.req.session.userId);
+          // article.isEditable = article.userId === opts.req.session.userId ? true : false;
+          article.isEditable = true;
           article.owner = user.fullname;
           callback(null, article);
         })
